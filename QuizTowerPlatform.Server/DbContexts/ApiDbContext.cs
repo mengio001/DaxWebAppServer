@@ -9,6 +9,7 @@ namespace QuizTowerPlatform.Server.DbContexts
         {
         }
 
+        public DbSet<Image> Images { get; set; } = null!;
         //public DbSet<User> Users { get; set; }
 
         //public DbSet<UserClaim> UserClaims { get; set; }
