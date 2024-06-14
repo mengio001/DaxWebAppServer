@@ -12,9 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.11.3" />
+    <PackageReference Include="Azure.Identity" Version="1.11.4" />
+    <PackageReference Include="Duende.BFF.Yarp" Version="2.2.0" />
+    <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
     <PackageReference Include="IdentityModel.AspNetCore.OAuth2Introspection" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
@@ -30,14 +34,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QuizTowerPlatform.Authorization\QuizTowerPlatform.Authorization.csproj" />
     <ProjectReference Include="..\quiztowerplatform.client\quiztowerplatform.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\QuizTowerPlatform.Model\QuizTowerPlatform.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DbContexts\" />
-    <Folder Include="Entities\" />
+    <Folder Include="Authorization\" />
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
   </ItemGroup>

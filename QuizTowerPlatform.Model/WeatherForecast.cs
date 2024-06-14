@@ -1,4 +1,4 @@
-namespace QuizTowerPlatform.Server
+namespace QuizTowerPlatform.Model
 {
     public class WeatherForecast
     {

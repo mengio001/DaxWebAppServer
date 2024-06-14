@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QuizTowerPlatform.Server.Entities
+namespace QuizTowerPlatform.BFF.Entities
 {
+    [Table("Users", Schema = "Identity")]
     public class User : IConcurrencyAware
     {
         [Key]

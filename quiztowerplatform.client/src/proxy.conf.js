@@ -6,7 +6,15 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 const PROXY_CONFIG = [
   {
     context: [
-      "/weatherforecast",
+      // BFF Management Routes
+      "/bff",
+
+      // OIDC Handler Endpoints
+      "/signin-oidc",
+      "signout-callback-oidc",
+
+      // Remote Tower of Quizzes (TOQ) API Endpoints
+      "/toq"
     ],
     target,
     secure: false
