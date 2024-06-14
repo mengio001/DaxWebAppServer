@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuizTowerPlatform.Model;
 
-namespace QuizTowerPlatform.Server.Controllers
+namespace QuizTowerPlatform.BFF.Controllers
 {
     [ApiController]
     [Route("[controller]")]

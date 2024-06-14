@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using Duende.Bff.Yarp;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using QuizTowerPlatform.Authorization;
-using QuizTowerPlatform.Server.Services;
-using QuizTowerPlatform.Server.Authorization;
-using QuizTowerPlatform.Server.DbContexts;
+using QuizTowerPlatform.BFF.DbContexts;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -17,7 +15,11 @@ Log.Information("Starting up");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    
+    //var apiRoot = builder.Configuration["CoreBackendApiAuthority"];
+    var idpAuthority = builder.Configuration["IdPAuthority"];
+    const string bffCookieScheme = "BFFCookieScheme";
+    const string bffOpenIdConnectChallengeScheme = "BFFChallengeScheme";
+
     builder.Configuration
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
@@ -28,65 +30,77 @@ try
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
 
-    // Note: hiermee (JsonSerializerOptions.PropertyNamingPolicy = null) geef je aan dat de eigenschapsnamen precies moeten worden gebruikt zoals ze in de C#-code zijn gedefinieerd, zonder enige aanpassing (bijvoorbeeld zonder omzetting naar camelCase).
-    builder.Services.AddControllers()
-        .AddJsonOptions(configure => configure.JsonSerializerOptions.PropertyNamingPolicy = null);
-
-    builder.Services.AddDbContext<ApiDbContext>(options =>
+    builder.Services.AddDbContext<BffDbContext>(options =>
     {
         options.UseSqlServer(
             builder.Configuration.GetConnectionString("DefaultConnection"));
     });
 
-    // register the repository
-    builder.Services.AddScoped<IGalleryRepository, GalleryRepository>();
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddScoped<IAuthorizationHandler, MustOwnImageHandler>();
+    // Note: hiermee (JsonSerializerOptions.PropertyNamingPolicy = null) geef je aan dat de eigenschapsnamen precies moeten worden gebruikt zoals ze in de C#-code zijn gedefinieerd, zonder enige aanpassing (bijvoorbeeld zonder omzetting naar camelCase).
+    builder.Services.AddControllers()
+        .AddJsonOptions(configure => configure.JsonSerializerOptions.PropertyNamingPolicy = null);
 
-    // register AutoMapper-related services
-    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddBff()
+        .AddRemoteApis();
 
+    // Note: With the next line, clean the JWT Token by removing 'backward compatibility: Microsoft WS-Security standard', which is no longer needed.
     JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        // Note: under the hood, the following happens before using reference token 'AddOAuth2Introspection'.
-        // Note: for testing (dotnet user-jwts list, print or create [options] --name {the name of the user to create the JWT for.}) without IDP we need return back to AccessTokenType = AccessTokenType.Jwt
-        //.AddJwtBearer(options =>
-        //{
-        //    options.Authority = "https://localhost:5001";
-        //    options.Audience = "towerofquizzesapi";
-        //    options.TokenValidationParameters = new()
-        //    {
-        //        NameClaimType = "given_name",
-        //        RoleClaimType = "role",
-        //        ValidTypes = new[] { "at+jwt" } // note: no more needed by AddOAuth2Introspection to prevent JWT Token attack! because there is nothing to decode and read with reference token.
-        //    };
-        //});
-        .AddOAuth2Introspection(options =>
+    // Note: Instead of manually passing bearer token we are using package of MS and 'AddAccessTokenManagement' function.
+    builder.Services.AddAccessTokenManagement();
+
+    builder.Services.AddHttpClient("IDPClient", client =>
+    {
+        client.BaseAddress = idpAuthority == null ? null : new Uri(idpAuthority);
+    });
+
+    builder.Services.AddAuthentication(options => 
+    {
+        options.DefaultScheme = bffCookieScheme;
+        options.DefaultChallengeScheme = bffOpenIdConnectChallengeScheme;
+        options.DefaultSignOutScheme = bffOpenIdConnectChallengeScheme;
+    })
+    .AddCookie(bffCookieScheme, options =>
+    {
+        options.Cookie.Name = $"__Host-{bffCookieScheme}";
+        options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+    })
+    .AddOpenIdConnect(bffOpenIdConnectChallengeScheme, options =>
+    {
+        //options.SignInScheme = bffOpenIdConnectChallengeScheme;
+        options.Authority = $"{idpAuthority}";
+        options.ClientId = "towerofquizzesbff";
+        options.ClientSecret = "bffclientsecret";
+        options.ResponseType = "code";
+        options.ResponseMode = "query";
+        //options.CallbackPath = new PathString("signin-oidc");
+        //SignedOutCallbackPath: default = host:port/signout-callback-oidc.
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.MapInboundClaims = false;
+        options.SaveTokens = true;
+
+        // https://github.com/dotnet/aspnetcore/blob/v8.0.1/src/Security/Authentication/OpenIdConnect/src/OpenIdConnectOptions.cs
+        // options.Scope.Clear(); // Note: If you use Scope.Clear(), then add openid and profile.
+        options.ClaimActions.Remove("aud");
+        options.ClaimActions.DeleteClaim("sid");
+        options.ClaimActions.DeleteClaim("idp");
+        options.Scope.Add("roles");
+        options.Scope.Add("towerofquizzesapi.read");
+        options.Scope.Add("towerofquizzesapi.write");
+        options.Scope.Add("country");
+        options.Scope.Add("offline_access");
+        options.ClaimActions.MapJsonKey("role", "role");
+        options.ClaimActions.MapUniqueJsonKey("country", "country");
+        options.TokenValidationParameters = new()
         {
-            options.Authority = "https://localhost:44300"; // note: middleware IDP entry-point URI
-            options.ClientId = "towerofquizzesapi";
-            options.ClientSecret = "apisecret";
-            options.NameClaimType = "given_name";
-            options.RoleClaimType = "role";
-        });
+            NameClaimType = "given_name",
+            RoleClaimType = "role",
+        };
+    });
 
     builder.Services.AddAuthorization(authorizationOptions =>
     {
         authorizationOptions.AddPolicy("UserCanAddImage", AuthorizationPolicies.CanAddImage());
-
-        authorizationOptions.AddPolicy("ClientApplicationCanWrite", policyBuilder =>
-            {
-                policyBuilder.RequireClaim("scope", "usermanagementapi.write");
-            }
-        );
-
-        authorizationOptions.AddPolicy("MustOwnImage", policyBuilder =>
-            {
-                policyBuilder.RequireAuthenticatedUser();
-                policyBuilder.AddRequirements(new MustOwnImageRequirement());
-            }
-        );
     });
 
     builder.Services.AddEndpointsApiExplorer();
@@ -104,14 +118,31 @@ try
         app.UseSwaggerUI();
         app.UseDeveloperExceptionPage();
     }
+    else
+    {
+        app.UseExceptionHandler("/Home/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
 
     app.UseHttpsRedirection();
 
     app.UseAuthentication();
-
+    app.UseBff();
     app.UseAuthorization();
+    app.MapBffManagementEndpoints();
 
     app.MapControllers();
+
+    //// Comment this out to use the external api
+    //app.MapGroup("/todos")
+    //    .ToDoGroup()
+    //    .RequireAuthorization()
+    //    .AsBffApiEndpoint();
+
+    // Comment this in to use the external api
+    app.MapRemoteBffApiEndpoint("/toq/images", "https://localhost:7258/api/images")
+        .RequireAccessToken(Duende.Bff.TokenType.User);
 
     app.MapFallbackToFile("/index.html");
 
