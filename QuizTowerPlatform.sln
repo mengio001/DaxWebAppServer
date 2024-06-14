@@ -3,9 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizTowerPlatform.Server", "QuizTowerPlatform.Server\QuizTowerPlatform.Server.csproj", "{0944784A-A8DB-460C-AF7F-7A730E16DA5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.BFF", "QuizTowerPlatform.Server\QuizTowerPlatform.BFF.csproj", "{0944784A-A8DB-460C-AF7F-7A730E16DA5C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{852A35A2-0073-4C20-AE28-A0A3439D10EC} = {852A35A2-0073-4C20-AE28-A0A3439D10EC}
+	EndProjectSection
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "quiztowerplatform.client", "quiztowerplatform.client\quiztowerplatform.client.esproj", "{0E52C85D-C66D-44A4-AD14-C0AD9A14B3DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.Authorization", "QuizTowerPlatform.Authorization\QuizTowerPlatform.Authorization.csproj", "{852A35A2-0073-4C20-AE28-A0A3439D10EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.API", "QuizTowerPlatform.Api\QuizTowerPlatform.API.csproj", "{942AE8BA-F51F-4E18-AE70-1FF3CB396708}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.Model", "QuizTowerPlatform.Model\QuizTowerPlatform.Model.csproj", "{F575FD8C-2745-4D5D-A7F3-15D5EC352B8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +32,18 @@ Global
 		{0E52C85D-C66D-44A4-AD14-C0AD9A14B3DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E52C85D-C66D-44A4-AD14-C0AD9A14B3DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E52C85D-C66D-44A4-AD14-C0AD9A14B3DC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{852A35A2-0073-4C20-AE28-A0A3439D10EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{852A35A2-0073-4C20-AE28-A0A3439D10EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{852A35A2-0073-4C20-AE28-A0A3439D10EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{852A35A2-0073-4C20-AE28-A0A3439D10EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{942AE8BA-F51F-4E18-AE70-1FF3CB396708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{942AE8BA-F51F-4E18-AE70-1FF3CB396708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{942AE8BA-F51F-4E18-AE70-1FF3CB396708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{942AE8BA-F51F-4E18-AE70-1FF3CB396708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F575FD8C-2745-4D5D-A7F3-15D5EC352B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F575FD8C-2745-4D5D-A7F3-15D5EC352B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F575FD8C-2745-4D5D-A7F3-15D5EC352B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F575FD8C-2745-4D5D-A7F3-15D5EC352B8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

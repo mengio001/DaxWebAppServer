@@ -1,4 +1,4 @@
-﻿namespace QuizTowerPlatform.Server.Entities
+﻿namespace QuizTowerPlatform.BFF.Entities
 {
     public interface IConcurrencyAware
     {
