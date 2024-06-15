@@ -41,10 +41,10 @@
     <ProjectReference Include="..\QuizTowerPlatform.Model\QuizTowerPlatform.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Folder Include="Authorization\" />
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
-  </ItemGroup>
+  </ItemGroup>-->
 
 </Project>

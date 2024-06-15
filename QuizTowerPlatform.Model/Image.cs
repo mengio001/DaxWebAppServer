@@ -1,11 +1,10 @@
-﻿namespace QuizTowerPlatform.Model
-{
-    public class Image
-    {      
-        public Guid Id { get; set; }
+﻿namespace QuizTowerPlatform.Model;
 
-        public string Title { get; set; } = string.Empty;
- 
-        public string FileName { get; set; } = string.Empty;
-    }
+public class Image
+{
+    public Guid Id { get; set; }
+
+    public string Title { get; set; } = string.Empty;
+
+    public string FileName { get; set; } = string.Empty;
 }

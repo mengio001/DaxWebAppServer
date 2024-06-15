@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuizTowerPlatform.Model
-{
-    public class ImageForUpdate
-    {
-        [Required]
-        [MaxLength(150)]
-        public string Title { get; set; }
+namespace QuizTowerPlatform.Model;
 
-        public ImageForUpdate(string title)
-        {
-            Title = title;
-        }
+public class ImageForUpdate
+{
+    public ImageForUpdate(string title)
+    {
+        Title = title;
     }
+
+    [Required] [MaxLength(150)] public string Title { get; set; }
 }

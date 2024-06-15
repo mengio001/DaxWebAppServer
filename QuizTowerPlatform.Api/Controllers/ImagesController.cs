@@ -5,148 +5,138 @@ using QuizTowerPlatform.API.Authorization;
 using QuizTowerPlatform.API.Services;
 using QuizTowerPlatform.Model;
 
-namespace QuizTowerPlatform.API.Controllers
+namespace QuizTowerPlatform.API.Controllers;
+
+[Route("api/images")]
+[ApiController]
+[Authorize]
+public class ImagesController : ControllerBase
 {
-    [Route("api/images")]
-    [ApiController]
-    [Authorize]
-    public class ImagesController : ControllerBase
+    private readonly IGalleryRepository _galleryRepository;
+    private readonly IWebHostEnvironment _hostingEnvironment;
+    private readonly IMapper _mapper;
+
+    public ImagesController(
+        IGalleryRepository galleryRepository,
+        IWebHostEnvironment hostingEnvironment,
+        IMapper mapper)
     {
-        private readonly IGalleryRepository _galleryRepository;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IMapper _mapper;
+        _galleryRepository = galleryRepository ??
+                             throw new ArgumentNullException(nameof(galleryRepository));
+        _hostingEnvironment = hostingEnvironment ??
+                              throw new ArgumentNullException(nameof(hostingEnvironment));
+        _mapper = mapper ??
+                  throw new ArgumentNullException(nameof(mapper));
+    }
 
-        public ImagesController(
-            IGalleryRepository galleryRepository,
-            IWebHostEnvironment hostingEnvironment,
-            IMapper mapper)
-        {
-            _galleryRepository = galleryRepository ?? 
-                throw new ArgumentNullException(nameof(galleryRepository));
-            _hostingEnvironment = hostingEnvironment ?? 
-                throw new ArgumentNullException(nameof(hostingEnvironment));
-            _mapper = mapper ?? 
-                throw new ArgumentNullException(nameof(mapper));
-        }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Image>>> GetImages()
+    {
+        var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-        [HttpGet()]
-        public async Task<ActionResult<IEnumerable<Image>>> GetImages()
-        {
+        if (ownerId == null) throw new Exception("User identifier is missing from token.");
 
-            var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+        // get from repo
+        var imagesFromRepo = await _galleryRepository.GetImagesAsync(ownerId);
 
-            if (ownerId == null) throw new Exception("User identifier is missing from token.");
+        // map to model
+        var imagesToReturn = _mapper.Map<IEnumerable<Image>>(imagesFromRepo);
 
-            // get from repo
-            var imagesFromRepo = await _galleryRepository.GetImagesAsync(ownerId);
+        // return
+        return Ok(imagesToReturn);
+    }
 
-            // map to model
-            var imagesToReturn = _mapper.Map<IEnumerable<Image>>(imagesFromRepo);
+    [HttpGet("{id}", Name = "GetImage")]
+    [MustOwnImage]
+    public async Task<ActionResult<Image>> GetImage(Guid id)
+    {
+        var imageFromRepo = await _galleryRepository.GetImageAsync(id);
 
-            // return
-            return Ok(imagesToReturn);
-        }
+        if (imageFromRepo == null) return NotFound();
 
-        [HttpGet("{id}", Name = "GetImage")]
-        [MustOwnImage]
-        public async Task<ActionResult<Image>> GetImage(Guid id)
-        {          
-            var imageFromRepo = await _galleryRepository.GetImageAsync(id);
+        var imageToReturn = _mapper.Map<Image>(imageFromRepo);
 
-            if (imageFromRepo == null)
-            {
-                return NotFound();
-            }
+        return Ok(imageToReturn);
+    }
 
-            var imageToReturn = _mapper.Map<Image>(imageFromRepo);
+    [HttpPost]
+    [Authorize(Policy = "UserCanAddImage")]
+    [Authorize(Policy = "ClientApplicationCanWrite")]
+    public async Task<ActionResult<Image>> CreateImage([FromBody] ImageForCreation imageForCreation)
+    {
+        // Automapper maps only the Title in our configuration
+        var imageEntity = _mapper.Map<Entities.Image>(imageForCreation);
 
-            return Ok(imageToReturn);
-        }
+        // Create an image from the passed-in bytes (Base64), and 
+        // set the filename on the image
 
-        [HttpPost()]
-        [Authorize(Policy = "UserCanAddImage")]
-        [Authorize(Policy = "ClientApplicationCanWrite")]
-        public async Task<ActionResult<Image>> CreateImage([FromBody] ImageForCreation imageForCreation)
-        {
-            // Automapper maps only the Title in our configuration
-            var imageEntity = _mapper.Map<Entities.Image>(imageForCreation);
+        // get this environment's web root path (the path
+        // from which static content, like an image, is served)
+        var webRootPath = _hostingEnvironment.WebRootPath;
 
-            // Create an image from the passed-in bytes (Base64), and 
-            // set the filename on the image
+        // create the filename
+        var fileName = Guid.NewGuid() + ".jpg";
 
-            // get this environment's web root path (the path
-            // from which static content, like an image, is served)
-            var webRootPath = _hostingEnvironment.WebRootPath;
+        // the full file path
+        var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
 
-            // create the filename
-            string fileName = Guid.NewGuid().ToString() + ".jpg";
-            
-            // the full file path
-            var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+        // write bytes and auto-close stream
+        await System.IO.File.WriteAllBytesAsync(filePath, imageForCreation.Bytes);
 
-            // write bytes and auto-close stream
-            await System.IO.File.WriteAllBytesAsync(filePath, imageForCreation.Bytes);
+        // fill out the filename
+        imageEntity.FileName = fileName;
 
-            // fill out the filename
-            imageEntity.FileName = fileName;
+        // ownerId should be set - can't save image in starter solution, will
+        // be fixed during the course
+        //imageEntity.OwnerId = ...;
 
-            // ownerId should be set - can't save image in starter solution, will
-            // be fixed during the course
-            //imageEntity.OwnerId = ...;
+        // set the ownerId on the imageEntity
+        var ownerId = User.Claims
+                          .FirstOrDefault(c => c.Type == "sub")?.Value ??
+                      throw new Exception("User identifier is missing from token.");
+        imageEntity.OwnerId = ownerId;
 
-            // set the ownerId on the imageEntity
-            var ownerId = (User.Claims
-                .FirstOrDefault(c => c.Type == "sub")?.Value) ?? throw new Exception("User identifier is missing from token.");
-            imageEntity.OwnerId = ownerId;
+        // add and save.  
+        _galleryRepository.AddImage(imageEntity);
 
-            // add and save.  
-            _galleryRepository.AddImage(imageEntity);
+        await _galleryRepository.SaveChangesAsync();
 
-            await _galleryRepository.SaveChangesAsync();
+        var imageToReturn = _mapper.Map<Image>(imageEntity);
 
-            var imageToReturn = _mapper.Map<Image>(imageEntity);
+        return CreatedAtRoute("GetImage",
+            new { id = imageToReturn.Id },
+            imageToReturn);
+    }
 
-            return CreatedAtRoute("GetImage",
-                new { id = imageToReturn.Id },
-                imageToReturn);
-        }
+    [HttpDelete("{id}")]
+    [Authorize("MustOwnImage")]
+    public async Task<IActionResult> DeleteImage(Guid id)
+    {
+        var imageFromRepo = await _galleryRepository.GetImageAsync(id);
 
-        [HttpDelete("{id}")]
-        [Authorize("MustOwnImage")]
-        public async Task<IActionResult> DeleteImage(Guid id)
-        {            
-            var imageFromRepo = await _galleryRepository.GetImageAsync(id);
+        if (imageFromRepo == null) return NotFound();
 
-            if (imageFromRepo == null)
-            {
-                return NotFound();
-            }
+        _galleryRepository.DeleteImage(imageFromRepo);
 
-            _galleryRepository.DeleteImage(imageFromRepo);
+        await _galleryRepository.SaveChangesAsync();
 
-            await _galleryRepository.SaveChangesAsync();
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    [HttpPut("{id}")]
+    [Authorize("MustOwnImage")]
+    public async Task<IActionResult> UpdateImage(Guid id,
+        [FromBody] ImageForUpdate imageForUpdate)
+    {
+        var imageFromRepo = await _galleryRepository.GetImageAsync(id);
+        if (imageFromRepo == null) return NotFound();
 
-        [HttpPut("{id}")]
-        [Authorize("MustOwnImage")]
-        public async Task<IActionResult> UpdateImage(Guid id, 
-            [FromBody] ImageForUpdate imageForUpdate)
-        {
-            var imageFromRepo = await _galleryRepository.GetImageAsync(id);
-            if (imageFromRepo == null)
-            {
-                return NotFound();
-            }
+        _mapper.Map(imageForUpdate, imageFromRepo);
 
-            _mapper.Map(imageForUpdate, imageFromRepo);
+        _galleryRepository.UpdateImage(imageFromRepo);
 
-            _galleryRepository.UpdateImage(imageFromRepo);
+        await _galleryRepository.SaveChangesAsync();
 
-            await _galleryRepository.SaveChangesAsync();
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

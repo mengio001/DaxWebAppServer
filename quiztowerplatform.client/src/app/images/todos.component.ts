@@ -36,9 +36,9 @@ export class TodosComponent implements OnInit {
 
   public createTodo(): void {
     this.http
-      .post<Todo>('todos', {
-        name: this.name,
-        date: this.date,
+      .post<Todo>('weatherforecast', {
+        // name: this.name,
+        // date: this.date,
       })
       .pipe(catchError(this.showError))
       .subscribe((todo) => {
@@ -48,20 +48,20 @@ export class TodosComponent implements OnInit {
   }
 
   public deleteTodo(id: number): void {
-    this.http.delete(`todos/${id}`)
+    this.http.delete(`weatherforecast/${id}`)
       .pipe(catchError(this.showError))
       .subscribe(() => {
-        const todos = this.todos.getValue().filter((x) => x.id !== id);
-        this.todos.next(todos);
+        // const todos = this.todos.getValue().filter((x) => x.id !== id);
+        // this.todos.next(todos);
       });
   }
 
   private fetchTodos(): void {
     this.http
-      .get<Todo[]>('todos')
+      .get<Todo[]>('weatherforecast')
       .pipe(catchError(this.showError))
       .subscribe((todos) => {
-        this.todos.next(todos);
+        // this.todos.next(todos);
       });
   }
 
@@ -74,8 +74,8 @@ export class TodosComponent implements OnInit {
 }
 
 interface Todo {
-  id: number;
-  name: string;
   date: string;
-  user: string;
+  temperatureC: number;
+  temperatureF: number;
+  summary: string;
 }

@@ -2,63 +2,62 @@
 using QuizTowerPlatform.API.DbContexts;
 using QuizTowerPlatform.API.Entities;
 
-namespace QuizTowerPlatform.API.Services
+namespace QuizTowerPlatform.API.Services;
+
+public class GalleryRepository : IGalleryRepository
 {
-    public class GalleryRepository : IGalleryRepository 
+    private readonly ApiDbContext _context;
+
+    public GalleryRepository(ApiDbContext apiDbContext)
     {
-        private readonly ApiDbContext _context;
+        _context = apiDbContext ??
+                   throw new ArgumentNullException(nameof(apiDbContext));
+    }
 
-        public GalleryRepository(ApiDbContext apiDbContext)
-        {
-            _context = apiDbContext ?? 
-                throw new ArgumentNullException(nameof(apiDbContext));
-        }
+    public async Task<bool> ImageExistsAsync(Guid id)
+    {
+        return await _context.Images.AnyAsync(i => i.Id == id);
+    }
 
-        public async Task<bool> ImageExistsAsync(Guid id)
-        {
-            return await _context.Images.AnyAsync(i => i.Id == id);
-        }       
+    public async Task<Image?> GetImageAsync(Guid id)
+    {
+        return await _context.Images.FirstOrDefaultAsync(i => i.Id == id);
+    }
 
-        public async Task<Image?> GetImageAsync(Guid id)
-        {
-            return await _context.Images.FirstOrDefaultAsync(i => i.Id == id);
-        }
-  
-        public async Task<IEnumerable<Image>> GetImagesAsync(string ownerId)
-        {
-            return await _context.Images
-                .Where(i => i.OwnerId == ownerId)
-                .OrderBy(i => i.Title).ToListAsync();
-        }
+    public async Task<IEnumerable<Image>> GetImagesAsync(string ownerId)
+    {
+        return await _context.Images
+            .Where(i => i.OwnerId == ownerId)
+            .OrderBy(i => i.Title).ToListAsync();
+    }
 
-        public async Task<bool> IsImageOwnerAsync(Guid id, string ownerId)
-        {
-            return await _context.Images
-                .AnyAsync(i => i.Id == id && i.OwnerId == ownerId);
-        }
-        
-        public void AddImage(Image image)
-        {
-            _context.Images.Add(image);
-        }
+    public async Task<bool> IsImageOwnerAsync(Guid id, string ownerId)
+    {
+        return await _context.Images
+            .AnyAsync(i => i.Id == id && i.OwnerId == ownerId);
+    }
 
-        public void UpdateImage(Image image)
-        {
-            // no code in this implementation
-        }
+    public void AddImage(Image image)
+    {
+        _context.Images.Add(image);
+    }
 
-        public void DeleteImage(Image image)
-        {
-            _context.Images.Remove(image);
+    public void UpdateImage(Image image)
+    {
+        // no code in this implementation
+    }
 
-            // Note: in a real-life scenario, the image itself potentially should 
-            // be removed from disk.  We don't do this in this demo
-            // scenario to allow for easier testing / re-running the code
-        }
+    public void DeleteImage(Image image)
+    {
+        _context.Images.Remove(image);
 
-        public async Task<bool> SaveChangesAsync()
-        {
-            return (await _context.SaveChangesAsync() >= 0);
-        } 
+        // Note: in a real-life scenario, the image itself potentially should 
+        // be removed from disk.  We don't do this in this demo
+        // scenario to allow for easier testing / re-running the code
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() >= 0;
     }
 }

@@ -2,6 +2,8 @@ using Duende.Bff.Yarp;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using QuizTowerPlatform.Authorization;
 using QuizTowerPlatform.BFF.DbContexts;
 using Serilog;
@@ -21,12 +23,14 @@ try
     const string bffOpenIdConnectChallengeScheme = "BFFChallengeScheme";
 
     builder.Configuration
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+        .AddJsonFile("appsettings.json", false, true)
+        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
         .AddEnvironmentVariables();
 
     builder.Host.UseSerilog((ctx, lc) => lc
-        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+        .WriteTo.Console(
+            outputTemplate:
+            "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
 
@@ -49,54 +53,54 @@ try
     // Note: Instead of manually passing bearer token we are using package of MS and 'AddAccessTokenManagement' function.
     builder.Services.AddAccessTokenManagement();
 
-    builder.Services.AddHttpClient("IDPClient", client =>
-    {
-        client.BaseAddress = idpAuthority == null ? null : new Uri(idpAuthority);
-    });
+    builder.Services.AddHttpClient("IDPClient",
+        client => { client.BaseAddress = idpAuthority == null ? null : new Uri(idpAuthority); });
 
-    builder.Services.AddAuthentication(options => 
-    {
-        options.DefaultScheme = bffCookieScheme;
-        options.DefaultChallengeScheme = bffOpenIdConnectChallengeScheme;
-        options.DefaultSignOutScheme = bffOpenIdConnectChallengeScheme;
-    })
-    .AddCookie(bffCookieScheme, options =>
-    {
-        options.Cookie.Name = $"__Host-{bffCookieScheme}";
-        options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
-    })
-    .AddOpenIdConnect(bffOpenIdConnectChallengeScheme, options =>
-    {
-        //options.SignInScheme = bffOpenIdConnectChallengeScheme;
-        options.Authority = $"{idpAuthority}";
-        options.ClientId = "towerofquizzesbff";
-        options.ClientSecret = "bffclientsecret";
-        options.ResponseType = "code";
-        options.ResponseMode = "query";
-        //options.CallbackPath = new PathString("signin-oidc");
-        //SignedOutCallbackPath: default = host:port/signout-callback-oidc.
-        options.GetClaimsFromUserInfoEndpoint = true;
-        options.MapInboundClaims = false;
-        options.SaveTokens = true;
-
-        // https://github.com/dotnet/aspnetcore/blob/v8.0.1/src/Security/Authentication/OpenIdConnect/src/OpenIdConnectOptions.cs
-        // options.Scope.Clear(); // Note: If you use Scope.Clear(), then add openid and profile.
-        options.ClaimActions.Remove("aud");
-        options.ClaimActions.DeleteClaim("sid");
-        options.ClaimActions.DeleteClaim("idp");
-        options.Scope.Add("roles");
-        options.Scope.Add("towerofquizzesapi.read");
-        options.Scope.Add("towerofquizzesapi.write");
-        options.Scope.Add("country");
-        options.Scope.Add("offline_access");
-        options.ClaimActions.MapJsonKey("role", "role");
-        options.ClaimActions.MapUniqueJsonKey("country", "country");
-        options.TokenValidationParameters = new()
+    builder.Services.AddAuthentication(options =>
         {
-            NameClaimType = "given_name",
-            RoleClaimType = "role",
-        };
-    });
+            options.DefaultScheme = bffCookieScheme;
+            options.DefaultChallengeScheme = bffOpenIdConnectChallengeScheme;
+            options.DefaultSignOutScheme = bffOpenIdConnectChallengeScheme;
+        })
+        .AddCookie(bffCookieScheme, options =>
+        {
+            options.Cookie.Name = $"__Host-{bffCookieScheme}";
+            options.Cookie.SameSite = SameSiteMode.Strict;
+        })
+        .AddOpenIdConnect(bffOpenIdConnectChallengeScheme, options =>
+        {
+            options.SignInScheme = bffCookieScheme;
+            options.Authority = $"{idpAuthority}";
+            options.ClientId = "towerofquizzesbff";
+            options.ClientSecret = "bffclientsecret";
+
+            options.ResponseType = OpenIdConnectResponseType.Code;
+            options.ResponseMode = OpenIdConnectResponseMode.Query;
+
+            //options.CallbackPath = new PathString("signin-oidc");
+            //SignedOutCallbackPath: default = host:port/signout-callback-oidc.
+            options.GetClaimsFromUserInfoEndpoint = true;
+            options.MapInboundClaims = false;
+            options.SaveTokens = true;
+
+            // https://github.com/dotnet/aspnetcore/blob/v8.0.1/src/Security/Authentication/OpenIdConnect/src/OpenIdConnectOptions.cs
+            // options.Scope.Clear(); // Note: If you use Scope.Clear(), then add openid and profile.
+            options.ClaimActions.Remove("aud");
+            options.ClaimActions.DeleteClaim("sid");
+            options.ClaimActions.DeleteClaim("idp");
+            options.Scope.Add("roles");
+            options.Scope.Add("towerofquizzesapi.read");
+            options.Scope.Add("towerofquizzesapi.write");
+            options.Scope.Add("country");
+            options.Scope.Add("offline_access");
+            options.ClaimActions.MapJsonKey("role", "role");
+            options.ClaimActions.MapUniqueJsonKey("country", "country");
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                NameClaimType = "given_name",
+                RoleClaimType = "role"
+            };
+        });
 
     builder.Services.AddAuthorization(authorizationOptions =>
     {
@@ -142,12 +146,11 @@ try
 
     // Comment this in to use the external api
     app.MapRemoteBffApiEndpoint("/toq/images", "https://localhost:7258/api/images")
-        .RequireAccessToken(Duende.Bff.TokenType.User);
+        .RequireAccessToken();
 
     app.MapFallbackToFile("/index.html");
 
     app.Run();
-
 }
 catch (HostAbortedException)
 {

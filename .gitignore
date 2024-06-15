@@ -419,8 +419,12 @@ node_modules/
 **/*.HTMLClient/GeneratedArtifacts
 **/*.DesktopClient/GeneratedArtifacts
 **/*.DesktopClient/ModelManifest.xml
+**/*.Api/GeneratedArtifacts
+**/*.Api/ModelManifest.xml
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
+**/*.BFF/GeneratedArtifacts
+**/*.BFF/ModelManifest.xml
 _Pvt_Extensions
 
 # Paket dependency manager

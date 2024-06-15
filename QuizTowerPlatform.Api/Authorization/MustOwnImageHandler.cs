@@ -5,8 +5,8 @@ namespace QuizTowerPlatform.API.Authorization;
 
 public class MustOwnImageHandler : AuthorizationHandler<MustOwnImageRequirement>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IGalleryRepository _galleryRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public MustOwnImageHandler(IHttpContextAccessor httpContextAccessor, IGalleryRepository galleryRepository)
     {
@@ -14,10 +14,11 @@ public class MustOwnImageHandler : AuthorizationHandler<MustOwnImageRequirement>
         _galleryRepository = galleryRepository ?? throw new ArgumentNullException(nameof(galleryRepository));
     }
 
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, MustOwnImageRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
+        MustOwnImageRequirement requirement)
     {
         var imageId = _httpContextAccessor.HttpContext?.GetRouteValue("id")?.ToString();
-        if (!Guid.TryParse(imageId, out Guid imageIdAsGuid))
+        if (!Guid.TryParse(imageId, out var imageIdAsGuid))
         {
             context.Fail();
             return;

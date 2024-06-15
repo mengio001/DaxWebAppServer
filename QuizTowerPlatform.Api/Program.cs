@@ -1,11 +1,11 @@
-using QuizTowerPlatform.API.Authorization;
-using QuizTowerPlatform.API.DbContexts;
-using QuizTowerPlatform.API.Services;
-using QuizTowerPlatform.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
+using QuizTowerPlatform.API.Authorization;
+using QuizTowerPlatform.API.DbContexts;
+using QuizTowerPlatform.API.Services;
+using QuizTowerPlatform.Authorization;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -20,12 +20,14 @@ try
     var idpAuthority = builder.Configuration["IdPAuthority"];
 
     builder.Configuration
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+        .AddJsonFile("appsettings.json", false, true)
+        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
         .AddEnvironmentVariables();
 
     builder.Host.UseSerilog((ctx, lc) => lc
-        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+        .WriteTo.Console(
+            outputTemplate:
+            "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
 
@@ -74,10 +76,8 @@ try
     {
         authorizationOptions.AddPolicy("UserCanAddImage", AuthorizationPolicies.CanAddImage());
 
-        authorizationOptions.AddPolicy("ClientApplicationCanWrite", policyBuilder =>
-        {
-            policyBuilder.RequireClaim("scope", "usermanagementapi.write");
-        });
+        authorizationOptions.AddPolicy("ClientApplicationCanWrite",
+            policyBuilder => { policyBuilder.RequireClaim("scope", "usermanagementapi.write"); });
 
         authorizationOptions.AddPolicy("MustOwnImage", policyBuilder =>
         {
@@ -109,7 +109,6 @@ try
     app.MapControllers();
 
     app.Run();
-
 }
 catch (HostAbortedException)
 {
