@@ -28,6 +28,12 @@ namespace QuizTowerPlatform.Api.Configurations
                             {
                                 { "openid", "openid" },
                                 { "offline_access", "offline_access" },
+                                { "profile", "profile" },
+                                { "roles", "roles" },
+                                { "country", "country" },
+                                { "towerofquizzesapi.fullaccess", "towerofquizzesapi.fullaccess" },
+                                { "towerofquizzesbffapi.fullaccess", "towerofquizzesbffapi.fullaccess" },
+                                { "usermanagementapi.fullaccess", "usermanagementapi.fullaccess"}
                             }
                         },
                         ClientCredentials = new OpenApiOAuthFlow
@@ -52,7 +58,7 @@ namespace QuizTowerPlatform.Api.Configurations
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("v1/swagger.json", $"{appTitle}");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{appTitle}");
                 options.OAuthClientId($"{idPSwaggerAudience}_swagger"); //Client id moet bekend zijn bij identityserver
                 options.OAuthAppName($"{appTitle} - Swagger");
                 options.OAuthUsePkce();
@@ -60,6 +66,9 @@ namespace QuizTowerPlatform.Api.Configurations
         }
     }
 
+    // Note: CSRF (Cross-Site Request Forgery) tokens are used to prevent unauthorized commands from being transmitted from a user that the web application trusts.
+    // When a user is authenticated, a CSRF token is typically included in the form of a hidden field in forms, or as a custom header in AJAX requests,
+    // to ensure that the request is coming from the authenticated user and not a malicious third party.
     public class AddCrossSiteRequestForgeryTokenHeaderParameter : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)

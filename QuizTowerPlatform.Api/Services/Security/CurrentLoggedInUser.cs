@@ -13,7 +13,7 @@ namespace QuizTowerPlatform.Api.Services.Security
         public TeamType TeamType { get; }
         public string Username { get; }
         public IQueryable<User> AccessibleUsers(IApiDbContext db);
-
+        
     }
 
     public class CurrentLoggedInUser : ICurrentLoggedInUser

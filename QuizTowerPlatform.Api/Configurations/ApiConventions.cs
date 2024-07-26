@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace QuizTowerPlatform.Api.Configurations
 {
     /// <summary>
-    /// Bevat standaard http responses voor controller acties o.b.v. methode naam en parameters.
+    /// Contains standard HTTP responses for controller actions based on method name and parameters.
     /// </summary>
     public static class ApiConventions
     {

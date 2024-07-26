@@ -1,32 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
+using QuizTowerPlatform.Api.Accessors;
 using QuizTowerPlatform.Api.Models;
 using System.Diagnostics;
 
 namespace QuizTowerPlatform.Api.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IRequestAccessor request) : base(request)
         {
-            _logger = logger;
+
         }
 
-        public IActionResult Index()
+        // GET: api/<ValuesController>
+        [HttpGet]
+        public IEnumerable<string> Get()
         {
-            return View();
+            return new string[] { "value1", "value2" };
         }
 
-        public IActionResult Privacy()
+        // GET api/<ValuesController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
         {
-            return View();
+            return "value";
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        // POST api/<ValuesController>
+        [HttpPost]
+        public void Post([FromBody] string value)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        // PUT api/<ValuesController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE api/<ValuesController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
         }
     }
 }

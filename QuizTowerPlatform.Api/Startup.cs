@@ -37,6 +37,8 @@ namespace QuizTowerPlatform.Api
                 options.AddDefaultPolicy(builder => builder.WithOrigins(Configuration.GetSection("CORS_Url").Value).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             });
 
+            services.AddControllersWithSecurityFilters();
+
             //https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/415#issuecomment-759871786
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,7 +61,6 @@ namespace QuizTowerPlatform.Api
                 });
 
             services.AddMemoryCache();
-            //services.AddFluentValidationConfiguration();
             services.AddHttpContextAccessor();
             if (Configuration.GetValue<bool>("EnableSwagger"))
             {
@@ -68,7 +69,6 @@ namespace QuizTowerPlatform.Api
             services.AddDbContext(Configuration);
             services.AddApiClients(Configuration);
             services.AddApiServices(Configuration);
-            //services.AddExceptionAndLogHandlingServices(Environment);
             services.AddAuthorization();
             services.Configure<JsonOptions>(options =>
             {
@@ -87,7 +87,6 @@ namespace QuizTowerPlatform.Api
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            //app.UseCustomExceptionHandling();
             app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseRouting();

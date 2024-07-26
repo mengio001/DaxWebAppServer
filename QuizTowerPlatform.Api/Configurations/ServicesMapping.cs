@@ -15,7 +15,7 @@ namespace QuizTowerPlatform.Api.Configurations
         public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IRequestAccessor, RequestAccessor>();
-            services.AddSingleton<Services.Security.RelationCheck.IAuthenticationService, Services.Security.RelationCheck.AuthenticationService>();
+            //services.AddSingleton<Services.Security.RelationCheck.IAuthenticationService, Services.Security.RelationCheck.AuthenticationService>();
         }
 
         public static void AddApiClients(this IServiceCollection services, IConfiguration configuration)

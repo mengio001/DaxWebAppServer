@@ -7,9 +7,7 @@ using QuizTowerPlatform.Data.Context;
 namespace QuizTowerPlatform.Api.Controllers
 {
     [Authorize]
-    [Route(Constants.ControllerPathPrefix + "/[controller]")]
-    //[Produces("application/json")]
-    //[Consumes("application/json")]
+    [Route(Constants.RoutePrefix + "[controller]/[action]")]
     public abstract class BaseController : ControllerBase
     {
         private readonly IRequestAccessor requestAccessor;
@@ -17,8 +15,6 @@ namespace QuizTowerPlatform.Api.Controllers
         {
             this.requestAccessor = requestAccessor;
         }
-
-        public ICurrentLoggedInUser CurrentUser => requestAccessor.CurrentUser;
         public IApiDbContext Db => requestAccessor.Db;
     }
 }

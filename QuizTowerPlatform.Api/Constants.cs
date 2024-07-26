@@ -2,7 +2,7 @@
 {
     public static class Constants
     {
-        public const string ControllerPathPrefix = "ivpapi";
+        public const string RoutePrefix = "api/";
         public const string DefaultValueString = " ";
         public const int DefaultValueInt = -1;
 
