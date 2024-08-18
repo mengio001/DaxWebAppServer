@@ -22,7 +22,7 @@ namespace QuizTowerPlatform.Api.Configurations
         {
             services.AddHttpClient<Services.ITokenService, Services.TokenService>((sp, client) =>
             {
-                client.BaseAddress = new Uri(configuration.GetValue<string>("Application:IdPAuthority"));
+                client.BaseAddress = new Uri(configuration.GetValue<string>("Application:IdPAuthority")!);
             });
         }
     }

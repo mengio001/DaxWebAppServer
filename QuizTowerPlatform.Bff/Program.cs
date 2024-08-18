@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Yarp.ReverseProxy.Transforms;
 
 namespace QuizTowerPlatform.Bff
 {
@@ -37,6 +39,8 @@ namespace QuizTowerPlatform.Bff
         {
             services.AddControllersWithViews();
 
+            const string bffCookieScheme = "BFFCookieScheme";
+            const string bffOpenIdConnectChallengeScheme = "BFFChallengeScheme";
             var apiRoot = configuration["Application:BackendBaseAddress"];
             var idpAuthority = configuration["Application:IdPAuthority"];
             var idPAudience = configuration["Application:IdPAudience"];
@@ -44,27 +48,41 @@ namespace QuizTowerPlatform.Bff
             // Add authentication and authorization services
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                options.DefaultScheme = bffCookieScheme;
+                options.DefaultChallengeScheme = bffOpenIdConnectChallengeScheme;
+                options.DefaultSignOutScheme = bffOpenIdConnectChallengeScheme;
             })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            .AddCookie(bffCookieScheme, options =>
             {
+                options.Cookie.Name = bffCookieScheme;
+                options.Cookie.SameSite = SameSiteMode.Strict;
                 options.AccessDeniedPath = "/Authentication/AccessDenied";
+                options.Events.OnRedirectToLogin = (context) =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
             })
-            .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+            .AddOpenIdConnect(bffOpenIdConnectChallengeScheme, options =>
             {
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.SignInScheme = bffCookieScheme;
                 options.Authority = $"{idpAuthority}";
                 options.ClientId = configuration["Application:OidcClientId"];
                 options.ClientSecret = configuration["Application:OidcClientSecret"];
                 options.ResponseType = "code";
                 options.SaveTokens = true;
-                options.GetClaimsFromUserInfoEndpoint = true;
+                // Specify where the user will be redirected after a successful login
+                options.CallbackPath = "/signin-oidc";
+                // Specify where the user will be redirected after logout || "/signout-callback-oidc" || "/signout-oidc"
+                options.SignedOutCallbackPath = "/signout-callback-oidc";
+                options.GetClaimsFromUserInfoEndpoint = true; // Note: This flag handles automatically, get all claims from IdentityServer.
                 options.Scope.Clear();
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("towerofquizzesapi.read");
                 options.Scope.Add("towerofquizzesapi.write");
+                options.Scope.Add("towerofquizzesbffapi.read");
+                options.Scope.Add("towerofquizzesbffapi.write");
                 options.Scope.Add("offline_access");
                 options.Scope.Add("roles");
                 options.Scope.Add("country");
@@ -81,7 +99,18 @@ namespace QuizTowerPlatform.Bff
 
             // YARP reverse proxy services - src: https://microsoft.github.io/reverse-proxy/articles/getting-started.html
             services.AddReverseProxy()
-                .LoadFromConfig(Configuration.GetSection("ReverseProxy"));
+                .LoadFromConfig(Configuration.GetSection("ReverseProxy"))
+                .AddTransforms(builderContext =>
+                {
+                    builderContext.AddRequestTransform(async transformContext =>
+                    {
+                        var accessToken = await transformContext.HttpContext.GetTokenAsync("access_token");
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            transformContext.ProxyRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                        }
+                    });
+                });
         }
 
         public static void Configure(WebApplication app, IHostEnvironment env)

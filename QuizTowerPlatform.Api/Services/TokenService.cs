@@ -67,7 +67,7 @@ namespace QuizTowerPlatform.Api.Services
                 var responseString = (await response.Content.ReadAsStringAsync());
                 throw new SecurityException($"Error: StatusCode='{response.StatusCode}'. Request=[clientId={clientId}, Scopes={string.Join(" ", scopes)}] Response='{(responseString?.Length > 256 ? responseString.Substring(256) : responseString)}'");
             }
-            return JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync())!;
         }
 
         public class Token

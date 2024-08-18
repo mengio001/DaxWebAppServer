@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string StringOrNull(this string value)
+        public static string? StringOrNull(this string value)
         {
             return string.IsNullOrWhiteSpace(value) ? null : value;
         }

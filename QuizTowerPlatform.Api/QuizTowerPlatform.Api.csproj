@@ -34,4 +34,8 @@
     <ProjectReference Include="..\QuizTowerPlatform.Model\QuizTowerPlatform.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Accessors\" />
+  </ItemGroup>
+  
 </Project>

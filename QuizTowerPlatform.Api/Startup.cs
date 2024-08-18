@@ -34,7 +34,7 @@ namespace QuizTowerPlatform.Api
             services.AddCors(options =>
             {
                 // Onderstaande aanpassen naar de specificatie van de consumerende applicatie!
-                options.AddDefaultPolicy(builder => builder.WithOrigins(Configuration.GetSection("CORS_Url").Value).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+                options.AddDefaultPolicy(builder => builder.WithOrigins(Configuration.GetSection("CORS_Url").Value!).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             });
 
             services.AddControllersWithSecurityFilters();
@@ -64,7 +64,7 @@ namespace QuizTowerPlatform.Api
             services.AddHttpContextAccessor();
             if (Configuration.GetValue<bool>("EnableSwagger"))
             {
-                services.AddSwaggerDocumentation(Configuration.GetValue<string>("Application:IdPAuthority"), Configuration.GetValue<string>("Application:DisplayName"));
+                services.AddSwaggerDocumentation(Configuration.GetValue<string>("Application:IdPAuthority")!, Configuration.GetValue<string>("Application:DisplayName")!);
             }
             services.AddDbContext(Configuration);
             services.AddApiClients(Configuration);
@@ -101,7 +101,7 @@ namespace QuizTowerPlatform.Api
 
             if (Configuration.GetValue<bool>("EnableSwagger"))
             {
-                app.UseSwaggerDocumentation(Configuration.GetValue<string>("Application:Name"), Configuration.GetValue<string>("Application:IdPAudience"));
+                app.UseSwaggerDocumentation(Configuration.GetValue<string>("Application:Name")!, Configuration.GetValue<string>("Application:IdPAudience")!);
             }
 
         }
