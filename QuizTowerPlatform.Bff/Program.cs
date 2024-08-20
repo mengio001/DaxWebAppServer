@@ -70,6 +70,7 @@ namespace QuizTowerPlatform.Bff
                 options.ClientId = configuration["Application:OidcClientId"];
                 options.ClientSecret = configuration["Application:OidcClientSecret"];
                 options.ResponseType = "code";
+                options.ResponseMode = "query";
                 options.SaveTokens = true;
                 // Specify where the user will be redirected after a successful login
                 options.CallbackPath = "/signin-oidc";

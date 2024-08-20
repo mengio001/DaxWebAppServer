@@ -21,7 +21,7 @@ namespace QuizTowerPlatform.Api.Services.Security
         public CurrentLoggedInUser(int id, int teamId, TeamType teamType)
         {
             if (teamType is not (TeamType.TeamRed or TeamType.TeamYellow))
-                throw new ArgumentOutOfRangeException(nameof(teamType), teamType, "Gebruikers binnen deze TeamType worden niet ondersteund");
+                throw new ArgumentOutOfRangeException(nameof(teamType), teamType, "Users within this TeamType are not supported");
 
             Id = id;
             TeamId = teamId;
@@ -41,7 +41,7 @@ namespace QuizTowerPlatform.Api.Services.Security
                     return db.Users.Where(g => g.Id == Id);
                 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(TeamType), TeamType, "Gebruikers binnen deze TeamType worden niet ondersteund");
+                    throw new ArgumentOutOfRangeException(nameof(TeamType), TeamType, "Users within this TeamType are not supported");
             }
         }
     }

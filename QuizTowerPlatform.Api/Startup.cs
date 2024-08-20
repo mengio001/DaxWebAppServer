@@ -26,14 +26,14 @@ namespace QuizTowerPlatform.Api
             Environment = environment;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method is triggered by the runtime. Utilize this method to configure and register services within the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationInsightsTelemetry();
 
             services.AddCors(options =>
             {
-                // Onderstaande aanpassen naar de specificatie van de consumerende applicatie!
+                // Adjust the following to match the specifications of the consuming application!
                 options.AddDefaultPolicy(builder => builder.WithOrigins(Configuration.GetSection("CORS_Url").Value!).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             });
 
@@ -56,7 +56,7 @@ namespace QuizTowerPlatform.Api
                     {
                         NameClaimType = "given_name",
                         RoleClaimType = "role",
-                        ValidTypes = new[] { "at+jwt" } // note: no more needed by AddOAuth2Introspection to prevent JWT Token attack! because there is nothing to decode and read with reference token.
+                        ValidTypes = new[] { "at+jwt" } // Note: no more needed by AddOAuth2Introspection to prevent JWT Token attack! because there is nothing to decode and read with reference token.
                     };
                 });
 
@@ -79,7 +79,7 @@ namespace QuizTowerPlatform.Api
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method is invoked by the runtime. Use this method to set up the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions()

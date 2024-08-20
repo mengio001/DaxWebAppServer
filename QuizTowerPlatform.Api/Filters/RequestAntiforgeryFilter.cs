@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace QuizTowerPlatform.Api.Filters
 {
     /// <summary>
-    /// Action filter dat Cross Site Request Forgery (xsrf) voorkomt door het RequestVerificationToken te valideren en in de response header te zetten.
+    /// Action filter that prevents Cross-Site Request Forgery (XSRF) by validating the RequestVerificationToken and setting it in the response header.
     /// </summary>
     public class RequestAntiforgeryFilter : IActionFilter
     {

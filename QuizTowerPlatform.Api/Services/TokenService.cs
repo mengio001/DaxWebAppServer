@@ -13,8 +13,8 @@ namespace QuizTowerPlatform.Api.Services
     }
 
     /// <summary>
-    /// Service om clientCredential tokens te verkrijgen. Tokens worden gecached indien mogelijk.
-    /// Voorbeeld registratie van deze service:
+    /// Service to obtain client credential tokens. Tokens are cached if possible.
+    /// Example of registering this service:
     /// <code>
     /// services.AddHttpClient<ITokenService, TokenService>((sp, client) =>
     /// {
