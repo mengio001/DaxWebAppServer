@@ -1,4 +1,4 @@
 export interface UserClaim {
-    type: string;
-    value: string;
-  }  
+  type: string;
+  value: string;
+}

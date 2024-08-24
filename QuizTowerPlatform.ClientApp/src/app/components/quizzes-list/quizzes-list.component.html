@@ -1,1 +1,60 @@
-<p>quizzes-list works!</p>
+<div class="banner">
+    <h1>Quizzes</h1>
+</div>
+
+<p *ngIf="anonymous$ | async">
+    Please log in to see your Quiz items.
+</p>
+
+<ng-container *ngIf="authenticated$ | async">
+    <div class="row">
+        <div class="col">
+            <h3>Add New</h3>
+            <button class="btn btn-primary" (click)="createQuiz()">Add</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <h3>Dummyn test navigateTo()</h3>
+            <button class="btn btn-primary" (click)="navigateToQuizDetails(1)">Add</button>
+        </div>
+    </div>
+
+    <div *ngIf="error$ | async" class="row">
+        <div class="col">
+            <div class="alert alert-warning hide">
+                <strong>Error: </strong>
+                <span>{{error$ | async}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Note</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let quiz of quizzes$ | async" (click)="navigateToQuizDetails(quiz.id)">
+                    <td>
+                        <button class="btn btn-danger"
+                                (click)="deleteQuiz(quiz.id)">
+                            delete
+                        </button>
+                    </td>
+                    <td>{{ quiz.id }}</td>
+                    <td>{{ quiz.date | date:'M/d/yy' }}</td>
+                    <td>{{ quiz.name }}</td>
+                    <td>{{ quiz.user }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>
