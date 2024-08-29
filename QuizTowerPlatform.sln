@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizTowerPlatform.Api", "QuizTowerPlatform.Api\QuizTowerPlatform.Api.csproj", "{2C3CC3F9-07FB-4C38-8739-C8B4F2277029}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.Api", "QuizTowerPlatform.Api\QuizTowerPlatform.Api.csproj", "{2C3CC3F9-07FB-4C38-8739-C8B4F2277029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizTowerPlatform.Bff", "QuizTowerPlatform.Bff\QuizTowerPlatform.Bff.csproj", "{E119E7DC-D504-4328-A58D-82CC4F1973FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.Bff", "QuizTowerPlatform.Bff\QuizTowerPlatform.Bff.csproj", "{E119E7DC-D504-4328-A58D-82CC4F1973FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizTowerPlatform.Data", "QuizTowerPlatform.Data\QuizTowerPlatform.Data.csproj", "{70A27759-F8EA-4283-9646-EF12C7908DDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.Data", "QuizTowerPlatform.Data\QuizTowerPlatform.Data.csproj", "{70A27759-F8EA-4283-9646-EF12C7908DDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizTowerPlatform.Model", "QuizTowerPlatform.Model\QuizTowerPlatform.Model.csproj", "{2329B504-42C2-4518-8CFC-79905744E0B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizTowerPlatform.Model", "QuizTowerPlatform.Model\QuizTowerPlatform.Model.csproj", "{2329B504-42C2-4518-8CFC-79905744E0B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizTowerPlatform.Api.Test", "QuizTowerPlatform.Api.Test\QuizTowerPlatform.Api.Test.csproj", "{F5DB7A6A-0558-475E-B6B5-14637E27CE9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2329B504-42C2-4518-8CFC-79905744E0B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2329B504-42C2-4518-8CFC-79905744E0B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2329B504-42C2-4518-8CFC-79905744E0B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5DB7A6A-0558-475E-B6B5-14637E27CE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5DB7A6A-0558-475E-B6B5-14637E27CE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5DB7A6A-0558-475E-B6B5-14637E27CE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5DB7A6A-0558-475E-B6B5-14637E27CE9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
