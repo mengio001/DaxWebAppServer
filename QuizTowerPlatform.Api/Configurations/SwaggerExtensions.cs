@@ -63,6 +63,9 @@ namespace QuizTowerPlatform.Api.Configurations
                 options.OAuthClientId($"{idPSwaggerAudience}_swagger"); //Client id moet bekend zijn bij identityserver
                 options.OAuthAppName($"{appTitle} - Swagger");
                 options.OAuthUsePkce();
+                // For fast debug, remove this from source-code
+                options.OAuthScopes("openid", "profile", "offline_access", "roles", "country", "towerofquizzesapi.read", "towerofquizzesapi.write");
+                options.OAuthClientSecret("secret");
             });
         }
     }
@@ -109,7 +112,7 @@ namespace QuizTowerPlatform.Api.Configurations
                                     Id = "oauth2"
                                 }
                             }
-                        ] = new[] { "towerofquizzesapi" }
+                        ] = new[] { "roles", "country", "towerofquizzesapi.read", "towerofquizzesapi.write" }
                     }
                 };
             }

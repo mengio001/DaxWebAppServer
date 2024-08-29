@@ -1,24 +1,6 @@
-<div class="row">
-    <div class="col-6">
-      <div class="row">
-        Welcome bij Quiz id: {{ quizId }}
-      </div>
-    </div>
-    <div class="col-6">
-      <div class="row mt-2">
-        <h5 class="col-12"></h5>
-      </div>
-      <div class="row">
-        <h3 class="col-12"></h3>
-      </div>
-      <div class="row">
-        <h2 class="themeFontColor col-12">
-         
-        </h2>
-      </div>
-      <div class="row">
-        <div class="col-12 mt-3"></div>
-      </div>
-    </div>
-  </div>
-  
+<div class="quiz-header text-left">
+  <h2>Tower of Quiz: {{ quiz.Name }}</h2>
+  <p><strong>Category:</strong> {{ +quiz.Category | categoryDisplayName }}</p>
+  <img *ngIf="quiz.QuizLogoUrl" [src]="quiz.QuizLogoUrl" alt="{{ quiz.Name }} Logo" class="img-fluid my-3"
+    style="max-height: 200px;">
+</div>

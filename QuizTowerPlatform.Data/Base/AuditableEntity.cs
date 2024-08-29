@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuizTowerPlatform.Data.Base
 {
-    public abstract class ConcurrencyAware: IConcurrencyAware
+    public abstract class AuditableEntity : IConcurrencyAware
     {
         [Key]
         [Column("ID", Order = 0)]

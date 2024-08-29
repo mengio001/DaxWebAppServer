@@ -19,6 +19,7 @@ export class AuthenticationService {
     const { ignoreCache = false } = options; 
   
     if (!this.session$ || ignoreCache) {
+      console.log('Session:{0} ignoreCache:{1}', this.session$, ignoreCache);
       this.session$ = this.http.get<Session>('/account/user?slide=true').pipe(
         catchError((err) => {
           return of(ANONYMOUS);

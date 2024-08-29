@@ -10,19 +10,31 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { routes } from './app.routes';
 import { HomeComponent } from './home/home.component';
-import { QuizComponent } from './components/quiz/quiz.component';
-import { QuizzesListComponent } from './components/quizzes-list/quizzes-list.component';
 import { UserSessionComponent } from './user-session/user-session.component';
 import { CsrfHeaderInterceptor } from './csrf-header.interceptor';
+import { QuizComponent } from './components/quiz/quiz.component';
+import { QuizzesListComponent } from './components/quizzes-list/quizzes-list.component';
+import { CreateQuizComponent } from './components/create-quiz/create-quiz.component';
+import { AddQuestionsComponent } from './components/add-questions/add-questions.component';
+import { StartQuizComponent } from './components/start-quiz/start-quiz.component';
+import { SuperUserQuizComponent } from './components/super-user-quiz/super-user-quiz.component';
+
+import { SharedModule } from './shared/shared.module';
+import { CategoryDisplayNamePipe } from './pipes/category-display-name-pipe';
 
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
+        UserSessionComponent,
         HomeComponent,
         QuizComponent,
         QuizzesListComponent,
-        UserSessionComponent,        
+        CreateQuizComponent,
+        AddQuestionsComponent,
+        CategoryDisplayNamePipe,
+        StartQuizComponent,
+        SuperUserQuizComponent
     ],
     imports: [
         BrowserModule,
@@ -30,7 +42,8 @@ import { CsrfHeaderInterceptor } from './csrf-header.interceptor';
         FormsModule,
         ReactiveFormsModule,  
         RouterModule.forRoot(routes),
-        CommonModule
+        CommonModule,
+        SharedModule
     ],
     providers: [
         { 
@@ -42,6 +55,9 @@ import { CsrfHeaderInterceptor } from './csrf-header.interceptor';
             multi: true
         },
         provideHttpClient(withInterceptorsFromDi()),      
+    ],
+    exports: [
+        CategoryDisplayNamePipe
     ],
     bootstrap: [
         AppComponent

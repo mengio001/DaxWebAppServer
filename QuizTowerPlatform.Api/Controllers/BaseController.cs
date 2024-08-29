@@ -8,6 +8,7 @@ namespace QuizTowerPlatform.Api.Controllers
 {
     [Authorize]
     [Route(Constants.RoutePrefix + "[controller]/[action]")]
+    [ApiController]
     public abstract class BaseController : ControllerBase
     {
         private readonly IRequestAccessor requestAccessor;
@@ -15,6 +16,7 @@ namespace QuizTowerPlatform.Api.Controllers
         {
             this.requestAccessor = requestAccessor;
         }
+        public ICurrentLoggedInUser? LoggedInUser => requestAccessor.LoggedInUser; // Note: is not finished yet, the results are dummy data but the code flow is finished.
         public IApiDbContext Db => requestAccessor.Db;
     }
 }

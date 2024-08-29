@@ -29,10 +29,11 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
               {
                 "glob": "**/*",
-                "input": "public",
-                "output": "src/assets"
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],          
             "styles": [
@@ -40,7 +41,10 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.min.css",              
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"              
+            ]
           },
           "configurations": {
             "production": {

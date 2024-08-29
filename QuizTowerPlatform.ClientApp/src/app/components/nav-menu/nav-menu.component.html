@@ -22,7 +22,7 @@
           </li>
 
           <li *ngIf="authenticated$ | async" class="nav-item">
-            <a class="nav-link text-dark" href="{{logoutUrl$ | async}}">Signout</a>
+            <a class="nav-link text-dark" href="{{logoutUrl$ | async}}">Signout: {{username$ | async}}</a>
           </li>
         </ul>
       </div>
