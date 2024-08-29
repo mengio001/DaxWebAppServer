@@ -49,7 +49,7 @@ export class AuthorizationService {
     return this.getUserClaims().pipe(
       switchMap(() => this.roleClaim$),
       map((roles) => {
-        const requiredRoles = ['SecurityAdmin', 'QuizMaster', 'PayingUser'];
+        const requiredRoles = ['FreeUser', 'Player', 'PayingUser'];
         return requiredRoles.some(r => roles.includes(r));        
       }),
       catchError((error) => {

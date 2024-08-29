@@ -20,11 +20,13 @@ namespace QuizTowerPlatform.Api.Controllers
     {
         private readonly IQuizService service;
         private readonly IMapper mapper;
+        private readonly IAuthorizationService authorizationService;
 
-        public QuizController(IRequestAccessor request, IQuizService service, IMapper mapper) : base(request)
+        public QuizController(IRequestAccessor request, IQuizService service, IMapper mapper, IAuthorizationService authorizationService) : base(request)
         {
             this.service = service;
             this.mapper = mapper;
+            this.authorizationService = authorizationService;
         }
 
 
@@ -64,8 +66,7 @@ namespace QuizTowerPlatform.Api.Controllers
         }
 
         [HttpGet("{id}", Name = "GetQuizById")]
-        [Authorize(Policy = "UserCanEditQuiz")]
-        [Authorize(Policy = "ClientApplicationCanWrite")]
+        [Authorize(Policy = "ClientApplicationCanRead")]
         public async Task<IActionResult> GetQuiz(int id)
         {
             var getQuiz = await this.service.GetQuizById(Db, id);
@@ -76,6 +77,18 @@ namespace QuizTowerPlatform.Api.Controllers
             }
 
             var model = mapper.Map<QuizModel>(getQuiz);
+            var userCanEditQuiz = await authorizationService.AuthorizeAsync(User, null, "UserCanEditQuiz");
+            if (!userCanEditQuiz.Succeeded)
+            {
+                foreach (var question in model.QuizQuestions)
+                {
+                    question.CorrectAnswer = null;
+                }
+                if (model.Answers != null && model.Answers.Any())
+                {
+                    model.Answers.Clear();
+                }
+            }
             return model == null ? NotFound() : Ok(model);
         }
 
