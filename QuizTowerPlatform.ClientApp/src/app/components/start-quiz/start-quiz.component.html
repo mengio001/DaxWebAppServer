@@ -1,0 +1,24 @@
+<div *ngIf="!isLoading">
+    <app-quiz [quiz]="quiz"></app-quiz>
+    
+    <div class="quiz-questions mt-4">
+        <h3>Total Questions: {{ quiz.QuizQuestions.length }}</h3>
+        <form (ngSubmit)="onSubmitQuiz()">
+            <ul class="list-group">
+                <li *ngFor="let question of quiz.QuizQuestions; let i = index" class="list-group-item">
+                    <h5>Question {{ i + 1 }}: {{ question.QuestionName }}</h5>
+                    <div
+                        *ngFor="let option of [question.FirstOption, question.SecondOption, question.ThirdOption, question.FourthOption]">
+                        <label>
+                            <input type="radio" [name]="'question_' + i" [value]="option"
+                                (change)="onAnswerSelect(question.Id, option)">
+                            {{ option }}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+
+            <button type="submit" class="btn btn-primary mt-3">Submit Quiz</button>
+        </form>
+    </div>
+</div>

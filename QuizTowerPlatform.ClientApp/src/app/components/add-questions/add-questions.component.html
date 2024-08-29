@@ -1,0 +1,128 @@
+<div class="banner">
+    <h1 *ngIf="isExpanded">Add new Questions into {{this.quizName}}</h1>
+</div>
+
+<ng-container *ngIf="authenticated$ | async">
+    <div class="row my-2" *ngIf="!isExpanded">
+        <div class="form-group d-flex ms-auto">
+            <button type="button" [routerLink]="['/home']"
+                class="form-control btn btn-outline-secondary ms-0 me-1 my-1">Back to home</button>
+            <button type="button" (click)="toggle()" class="form-control btn btn-outline-secondary ms-1 me-0 my-1">Add
+                question</button>
+        </div>
+    </div>
+    <div class="row" *ngIf="isExpanded">
+        <div class="col">
+            <form autocomplete="off" [formGroup]="questionsForm" (ngSubmit)="addQuestion(questionsForm.value)"
+                class="form-inline">
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('QuestionName')?.invalid && questionsForm.get('QuestionName')?.dirty }">
+                    <label for="questionName">Question:</label>
+                    <em
+                        *ngIf="questionsForm.get('QuestionName')?.invalid && questionsForm.get('QuestionName')?.dirty">Required</em>
+                    <input class="form-control" formControlName="QuestionName" id="questionName" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('FirstOption')?.invalid && questionsForm.get('FirstOption')?.dirty }">
+                    <label for="firstOption">First Option:</label>
+                    <em
+                        *ngIf="questionsForm.get('FirstOption')?.invalid && questionsForm.get('FirstOption')?.dirty">Required</em>
+                    <input class="form-control" formControlName="FirstOption" id="firstOption" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('SecondOption')?.invalid && questionsForm.get('SecondOption')?.dirty }">
+                    <label for="secondOption">Second Option:</label>
+                    <em
+                        *ngIf="questionsForm.get('SecondOption')?.invalid && questionsForm.get('SecondOption')?.dirty">Required</em>
+                    <input class="form-control" formControlName="SecondOption" id="secondOption" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('ThirdOption')?.invalid && questionsForm.get('ThirdOption')?.dirty }">
+                    <label for="thirdOption">Third Option:</label>
+                    <em
+                        *ngIf="questionsForm.get('ThirdOption')?.invalid && questionsForm.get('ThirdOption')?.dirty">Required</em>
+                    <input class="form-control" formControlName="ThirdOption" id="thirdOption" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('FourthOption')?.invalid && questionsForm.get('FourthOption')?.dirty }">
+                    <label for="fourthOption">Fourth Option:</label>
+                    <em
+                        *ngIf="questionsForm.get('FourthOption')?.invalid && questionsForm.get('FourthOption')?.dirty">Required</em>
+                    <input class="form-control" formControlName="FourthOption" id="fourthOption" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('CorrectAnswer')?.invalid && questionsForm.get('CorrectAnswer')?.dirty }">
+                    <label for="correctAnswer">Correct Answer:</label>
+                    <em
+                        *ngIf="questionsForm.get('CorrectAnswer')?.invalid && questionsForm.get('CorrectAnswer')?.dirty">Required</em>
+                    <input class="form-control" formControlName="CorrectAnswer" id="correctAnswer" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : questionsForm.get('CorrectAnswerPoints')?.invalid && questionsForm.get('CorrectAnswerPoints')?.dirty }">
+                    <label for="correctAnswerPoints">Correct Answer Points:</label>
+                    <em
+                        *ngIf="questionsForm.get('CorrectAnswerPoints')?.invalid && questionsForm.get('CorrectAnswerPoints')?.dirty">Required</em>
+                    <input class="form-control" formControlName="CorrectAnswerPoints" id="correctAnswerPoints"
+                        type="number" />
+                </div>
+
+                <br />
+
+                <div class="form-group d-flex ms-auto">
+                    <button type="submit" *ngIf="!saving" [disabled]="questionsForm.invalid"
+                        class="form-control btn btn-primary ms-0 me-1 my-1">Create</button>
+                    <button type="button" (click)="cancel()"
+                        class="form-control btn btn-outline-secondary ms-1 me-0 my-1">Cancel</button>
+                </div>
+                <tq-loading-spinner [loading]="saving"></tq-loading-spinner>
+            </form>
+        </div>
+    </div>
+
+    <div *ngIf="error$ | async" class="row my-2">
+        <div class="col">
+            <div class="alert alert-warning">
+                <strong>Error: </strong>
+                <span>{{error$ | async}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-2">
+        <div class="col">
+            <ng-container *ngIf="(questionList$ | async) as questions">
+                <h3>Total Questions: {{ questions.length }}</h3>
+                <ul class="list-group">
+                    <li *ngFor="let question of questions; let i = index" class="list-group-item">
+                        <h5>Question {{ i + 1 }}: {{ question.QuestionName }}</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <strong>1. </strong> {{ question.FirstOption }}
+                            </li>
+                            <li>
+                                <strong>2. </strong> {{ question.SecondOption }}
+                            </li>
+                            <li>
+                                <strong>3. </strong> {{ question.ThirdOption }}
+                            </li>
+                            <li>
+                                <strong>4. </strong> {{ question.FourthOption }}
+                            </li>
+                        </ul>
+                        <p>
+                            <strong>Correct Answer: </strong>{{ question.CorrectAnswer }} <br />
+                            <strong>Points: </strong>{{ question.CorrectAnswerPoints }}
+                        </p>
+                    </li>
+                </ul>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>

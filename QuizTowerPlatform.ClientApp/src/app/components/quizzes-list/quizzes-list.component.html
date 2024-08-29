@@ -1,60 +1,57 @@
 <div class="banner">
-    <h1>Quizzes</h1>
+    <h1>Tower of Quizzes</h1>
 </div>
 
 <p *ngIf="anonymous$ | async">
     Please log in to see your Quiz items.
 </p>
 
-<ng-container *ngIf="authenticated$ | async">
-    <div class="row">
-        <div class="col">
-            <h3>Add New</h3>
-            <button class="btn btn-primary" (click)="createQuiz()">Add</button>
-        </div>
+<ng-container *ngIf="(authenticated$ | async)">
+    <div *ngIf="(canCreateQuiz$ | async)" class="d-flex align-items-end flex-column mb-3">
+        <span class="btn btn-outline-secondary" [routerLink]="['/create-quiz']">Add new Quiz</span>
     </div>
 
     <div class="row">
-        <div class="col">
-            <h3>Dummyn test navigateTo()</h3>
-            <button class="btn btn-primary" (click)="navigateToQuizDetails(1)">Add</button>
-        </div>
-    </div>
-
-    <div *ngIf="error$ | async" class="row">
-        <div class="col">
-            <div class="alert alert-warning hide">
-                <strong>Error: </strong>
-                <span>{{error$ | async}}</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <table class="table table-striped table-sm">
+        <table class="table table-striped table-sm" *ngIf='(quizzes$ | async)?.length || true'>
             <thead>
                 <tr>
-                    <th></th>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Note</th>
-                    <th>User</th>
+                    <th>Quiz</th>
+                    <th>Category</th>
+                    <th>Total question(s)</th>
+                    <th>Play</th>
+                    <th *ngIf="canDeleteQuiz$ | async">Delete</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let quiz of quizzes$ | async" (click)="navigateToQuizDetails(quiz.id)">
+                <tr *ngFor="let quiz of quizzes$ | async">
+
+                    <td (click)="navigateToQuizDetails(quiz.Id)">{{ quiz.Name }}</td>
+                    <td>{{ +quiz.Category | categoryDisplayName }}</td>
                     <td>
-                        <button class="btn btn-danger"
-                                (click)="deleteQuiz(quiz.id)">
+                        {{ quiz.QuizQuestions.length }} questions
+                        <button *ngIf="(canCreateQuiz$ | async)" type="button" class="btn btn-link ms-1 me-1 my-0" (click)="goToAddQuestions(quiz.Id, quiz.Name)">Add questions</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" (click)="startQuiz(quiz.Id)">
+                            start
+                        </button>
+                    </td>
+                    <td *ngIf="canDeleteQuiz$ | async">
+                        <button class="btn btn-danger" (click)="deleteQuiz(quiz.Id)">
                             delete
                         </button>
                     </td>
-                    <td>{{ quiz.id }}</td>
-                    <td>{{ quiz.date | date:'M/d/yy' }}</td>
-                    <td>{{ quiz.name }}</td>
-                    <td>{{ quiz.user }}</td>
                 </tr>
             </tbody>
         </table>
     </div>
 </ng-container>
+
+<div *ngIf="error$ | async" class="row">
+    <div class="col">
+        <div class="alert alert-warning">
+            <strong>Error: </strong>
+            <span>{{error$ | async}}</span>
+        </div>
+    </div>
+</div>

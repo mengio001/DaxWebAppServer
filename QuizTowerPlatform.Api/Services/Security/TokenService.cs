@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System.Configuration;
-using System.Net;
+﻿using System.Net;
 using System.Security;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
-namespace QuizTowerPlatform.Api.Services
+namespace QuizTowerPlatform.Api.Services.Security
 {
     public interface ITokenService
     {

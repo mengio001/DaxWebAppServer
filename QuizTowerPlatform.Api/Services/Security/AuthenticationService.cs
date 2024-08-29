@@ -1,10 +1,4 @@
-﻿using System.Security.Principal;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Caching.Memory;
-using QuizTowerPlatform.Api.Accessors;
-
-namespace QuizTowerPlatform.Api.Services.Security.RelationCheck
+﻿namespace QuizTowerPlatform.Api.Services.Security
 {
     //public interface IAuthenticationService
     //{

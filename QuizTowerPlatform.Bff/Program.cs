@@ -231,8 +231,6 @@ namespace QuizTowerPlatform.Bff
         {
             const string bffCookieScheme = "BFFCookieScheme";
             const string bffOpenIdConnectChallengeScheme = "BFFChallengeScheme";
-            var idPAudience = app.Configuration["Application:IdPAudience"];
-            var IdPAudienceSecret = app.Configuration["Application:IdPAudienceSecret"];
             var OidcClientId = app.Configuration["Application:OidcClientId"];
             var OidcClientSecret = app.Configuration["Application:OidcClientSecret"];
 
