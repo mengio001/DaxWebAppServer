@@ -6,6 +6,8 @@ trigger:
     - 'release'
   paths:   
     exclude:
+    - azure-pipelines-bff.yml
+    - azure-pipelines-spa.yml
     - QuizTowerPlatform.Bff/**
     - QuizTowerPlatform.ClientApp/**    
     - README.md
@@ -59,7 +61,7 @@ jobs:
     displayName: "Test"
     inputs:
       command: test
-      projects: '$(solution)'
+      projects: 'QuizTowerPlatform.Api.Test/**/*.csproj'
       arguments: '--configuration $(buildConfiguration)'
 
   - task: FileTransform@1

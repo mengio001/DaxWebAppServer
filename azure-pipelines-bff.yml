@@ -5,9 +5,9 @@ trigger:
     - 'main'
     - 'release'
   paths:
-    include:
-    - QuizTowerPlatform.Bff/**
     exclude:
+    - azure-pipelines-api.yml    
+    - azure-pipelines-spa.yml     
     - QuizTowerPlatform.Api/**
     - QuizTowerPlatform.ClientApp/**
     - README.md
