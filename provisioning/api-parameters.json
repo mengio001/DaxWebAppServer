@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "243a38cd-9041-4147-9fe1-4a1e408f0a3d"
+        },
+        "resourceGroupName": {
+            "value": "Default-Web-NorthEurope"
+        },
+        "name": {
+            "value": "QuizTowerPlatform-PRD01-API"
+        },
+        "location": {
+            "value": "North Europe"
+        },
+        "hostingPlanName": {
+            "value": "Plan66rkkgsj6yjqw"
+        },
+        "serverFarmResourceGroup": {
+            "value": "Default-Web-NorthEurope"
+        },
+        "alwaysOn": {
+            "value": true
+        },
+        "ftpsState": {
+            "value": "FtpsOnly"
+        },
+        "currentStack": {
+            "value": "dotnet"
+        },
+        "phpVersion": {
+            "value": "OFF"
+        },
+        "netFrameworkVersion": {
+            "value": "v8.0"
+        }
+    }
+}
