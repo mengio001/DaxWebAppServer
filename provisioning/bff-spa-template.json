@@ -44,7 +44,7 @@
             "name": "[parameters('name')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "microsoft.insights/components/ToqAppTest01"
+                "[concat('microsoft.insights/components/', parameters('name'))]"
             ],
             "properties": {
                 "name": "[parameters('name')]",
@@ -52,7 +52,7 @@
                     "appSettings": [
                         {
                             "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                            "value": "[reference('microsoft.insights/components/ToqAppTest01', '2015-05-01').ConnectionString]"
+                            "value": "[reference(concat('microsoft.insights/components/', parameters('name')), '2015-05-01').ConnectionString]"
                         },
                         {
                             "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
@@ -80,17 +80,17 @@
                     "virtualApplications": [
                         {
                             "virtualPath": "/",
-                            "physicalPath": "site\\wwwroot\\ClientApp",
+                            "physicalPath": "site\\wwwroot\\bff",
                             "preloadEnabled": true
                         },
                         {
-                            "virtualPath": "/public",
-                            "physicalPath": "site\\wwwroot\\ClientApp",
+                            "virtualPath": "/bff",
+                            "physicalPath": "site\\wwwroot\\bff",
                             "preloadEnabled": true
                         },                        
                         {
-                            "virtualPath": "/api",
-                            "physicalPath": "site\\wwwroot\\API",
+                            "virtualPath": "/home",
+                            "physicalPath": "site\\wwwroot\\spa",
                             "preloadEnabled": true
                         }
                     ]
@@ -110,7 +110,7 @@
                         "[resourceId('Microsoft.Web/Sites', parameters('name'))]"
                     ],
                     "properties": {
-                        "allow": true
+                        "allow": false
                     }
                 },
                 {
@@ -121,7 +121,7 @@
                         "[resourceId('Microsoft.Web/Sites', parameters('name'))]"
                     ],
                     "properties": {
-                        "allow": true
+                        "allow": false
                     }
                 },
                 {
@@ -138,7 +138,7 @@
                             "appSettings": [
                                 {
                                     "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                                    "value": "[reference('microsoft.insights/components/ToqAppTest01', '2015-05-01').ConnectionString]"
+                                    "value": "[reference(concat('microsoft.insights/components/', parameters('name')), '2015-05-01').ConnectionString]"
                                 },
                                 {
                                     "name": "WEBSITE_RUN_FROM_PACKAGE",
@@ -153,7 +153,7 @@
         {
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02-preview",
-            "name": "ToqAppTest01",
+            "name": "[parameters('name')]",
             "location": "northeurope",
             "dependsOn": [
                 "newWorkspaceTemplate"
