@@ -4,8 +4,10 @@ trigger:
     - 'develop'
     - 'main'
     - 'release'
-  paths:
+  paths:   
     exclude:
+    - QuizTowerPlatform.Bff/**
+    - QuizTowerPlatform.ClientApp/**    
     - README.md
     - docs/*
 

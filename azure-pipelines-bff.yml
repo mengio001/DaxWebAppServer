@@ -5,7 +5,11 @@ trigger:
     - 'main'
     - 'release'
   paths:
+    include:
+    - QuizTowerPlatform.Bff/**
     exclude:
+    - QuizTowerPlatform.Api/**
+    - QuizTowerPlatform.ClientApp/**
     - README.md
     - docs/*
 
