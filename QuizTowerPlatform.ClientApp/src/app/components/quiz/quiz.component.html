@@ -1,1 +1,6 @@
-<p>quiz works!</p>
+<div class="quiz-header text-left">
+  <h2>Tower of Quiz: {{ quiz.Name }}</h2>
+  <p><strong>Category:</strong> {{ +quiz.Category | categoryDisplayName }}</p>
+  <img *ngIf="quiz.QuizLogoUrl" [src]="quiz.QuizLogoUrl" alt="{{ quiz.Name }} Logo" class="img-fluid my-3"
+    style="max-height: 200px;">
+</div>

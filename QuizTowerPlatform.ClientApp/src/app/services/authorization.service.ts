@@ -1,47 +1,103 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-
-import { UserClaim } from '../types/userClaim';
+import { BehaviorSubject, catchError, map, Observable, of, shareReplay, switchMap, throwError } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorizationService {
-  private roleClaim: string = '';
-  nameClaim: string = '';
-  authenticated: boolean = false;
-  userClaims$: Observable<UserClaim[]> = new Observable<UserClaim[]>();
+  public username$ = this.auth.getUsername();
+  public authenticated$ = this.auth.getIsAuthenticated();
+  public anonymous$ = this.auth.getIsAnonymous();
+  public logoutUrl$ = this.auth.getLogoutUrl();
 
-  constructor(private http: HttpClient) {}
+  private roleClaimSubject = new BehaviorSubject<string[]>([]);
+  public roleClaim$ = this.roleClaimSubject.asObservable().pipe(shareReplay(1));
 
-  getUserClaims() {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'X-CSRF': '1',
+  constructor(private auth: AuthenticationService) {}
+
+  private loadUserClaims(): Observable<void> {
+    return this.auth.getSession({ ignoreCache: false }).pipe(
+      map((session) => {
+        if (session && Array.isArray(session)) {
+          const roleClaims = session.filter((claim) => claim.type === 'role');
+          const roles = roleClaims.map((claim) => claim.value);
+          this.roleClaimSubject.next(roles);
+        } else {
+          this.roleClaimSubject.next([]);
+        }
       }),
-    };
-    this.userClaims$ = this.http.get<UserClaim[]>(
-      '/account/user?slide=false',
-      httpOptions
+      catchError((error) => {
+        console.error('Error in loadUserClaims:', error);
+        this.roleClaimSubject.next([]);
+        return throwError(() => error);
+      })
     );
-    this.userClaims$.subscribe((c) => {
-      let name = c.find((claim) => claim.type === 'name');
-      this.nameClaim = name ? name.value : '';
-
-      let role = c.find((claim) => claim.type === 'role');
-      this.roleClaim = role ? role.value : '';
-
-      this.authenticated = c.length > 0;
-    });
   }
 
-  canReadQuizDetails() {
-    return this.roleClaim === 'Admin';
+  private getUserClaims(): Observable<void> {
+    const currentRoles = this.roleClaimSubject.getValue();
+    if (currentRoles.length === 0)
+      return this.loadUserClaims();
+
+    return  this.roleClaimSubject.getValue()
+      ? of(undefined)
+      : this.loadUserClaims(); // Note: load claims if not loaded yet
   }
 
-  canCreateQuiz() {
-    return this.roleClaim === 'Contributor';
+  canReadQuizDetails(): Observable<boolean> {
+    return this.getUserClaims().pipe(
+      switchMap(() => this.roleClaim$),
+      map((roles) => {
+        const requiredRoles = ['FreeUser', 'Player', 'PayingUser'];
+        return requiredRoles.some(r => roles.includes(r));        
+      }),
+      catchError((error) => {
+        console.error('Error in canReadQuizDetails:', error);
+        return of(false);
+      })
+    );
+  }
+
+  canReadQuizAnswers(): Observable<boolean> {
+    return this.getUserClaims().pipe(
+      switchMap(() => this.roleClaim$),
+      map((roles) => {
+        const requiredRoles = ['SecurityAdmin', 'QuizMaster'];
+        return requiredRoles.some(r => roles.includes(r));        
+      }),
+      catchError((error) => {
+        console.error('Error in canReadQuizAnswers:', error);
+        return of(false);
+      })
+    );
+  }
+
+  canCreateQuiz(): Observable<boolean> {
+    return this.getUserClaims().pipe(
+      switchMap(() => this.roleClaim$),
+      map((roles) => {
+        const requiredRoles = ['SecurityAdmin', 'QuizMaster'];
+        return requiredRoles.some(r => roles.includes(r));
+      }),      
+      catchError((error) => {
+        console.error('Error in canCreateQuiz:', error);
+        return of(false);
+      })
+    );
+  }
+
+  canDeleteQuiz(): Observable<boolean> {
+    return this.getUserClaims().pipe(
+      switchMap(() => this.roleClaim$),
+      map((roles) => {
+        const requiredRoles = ['SecurityAdmin', 'QuizMaster'];
+        return requiredRoles.some(r => roles.includes(r));
+      }),
+      catchError((error) => {
+        console.error('Error in canDeleteQuiz:', error);
+        return of(false);
+      })
+    );
   }
 }

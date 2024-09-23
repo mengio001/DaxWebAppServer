@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { IQuizModel, IQuestionModel } from "../../types/quiz.classes.models";
 
 @Component({
   selector: 'app-quiz',
-  standalone: true,
-  imports: [],
   templateUrl: './quiz.component.html',
-  styleUrl: './quiz.component.scss'
 })
-export class QuizComponent {
 
+export class QuizComponent {
+  @Input() quiz: IQuizModel = <IQuizModel>{};
 }

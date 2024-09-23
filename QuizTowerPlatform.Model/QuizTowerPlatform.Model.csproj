@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuizTowerPlatform.Data\QuizTowerPlatform.Data.csproj" />
+  </ItemGroup>
+
 </Project>

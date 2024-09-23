@@ -8,6 +8,8 @@ namespace QuizTowerPlatform.Api.Configurations
     {
         public static void AddSwaggerDocumentation(this IServiceCollection services, string authority, string docDisplayName)
         {
+            services.AddEndpointsApiExplorer();
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -31,9 +33,8 @@ namespace QuizTowerPlatform.Api.Configurations
                                 { "profile", "profile" },
                                 { "roles", "roles" },
                                 { "country", "country" },
-                                { "towerofquizzesapi.fullaccess", "towerofquizzesapi.fullaccess" },
-                                { "towerofquizzesbffapi.fullaccess", "towerofquizzesbffapi.fullaccess" },
-                                { "usermanagementapi.fullaccess", "usermanagementapi.fullaccess"}
+                                { "towerofquizzesapi.write", "towerofquizzesapi.write" },
+                                { "towerofquizzesapi.read", "towerofquizzesapi.read" }
                             }
                         },
                         ClientCredentials = new OpenApiOAuthFlow
@@ -62,6 +63,9 @@ namespace QuizTowerPlatform.Api.Configurations
                 options.OAuthClientId($"{idPSwaggerAudience}_swagger"); //Client id moet bekend zijn bij identityserver
                 options.OAuthAppName($"{appTitle} - Swagger");
                 options.OAuthUsePkce();
+                // For fast debug, remove this from source-code
+                options.OAuthScopes("openid", "profile", "offline_access", "roles", "country", "towerofquizzesapi.read", "towerofquizzesapi.write");
+                options.OAuthClientSecret("secret");
             });
         }
     }
@@ -79,7 +83,7 @@ namespace QuizTowerPlatform.Api.Configurations
             {
                 Name = "X-CSRF-TOKEN",
                 In = ParameterLocation.Header,
-                Description = "Http header 'X-CSRF-TOKEN'. Tip: Kopieer de cookie waarde van 'CSRF-TOKEN' cookie (verplicht bij PUT, POST en DELETE)",
+                Description = "HTTP header 'X-CSRF-TOKEN'. Tip: Copy the cookie value from the 'CSRF-TOKEN' cookie (mandatory for PUT, POST, and DELETE requests).",
                 Required = false
             });
         }
@@ -108,7 +112,7 @@ namespace QuizTowerPlatform.Api.Configurations
                                     Id = "oauth2"
                                 }
                             }
-                        ] = new[] { "towerofquizzesapi" }
+                        ] = new[] { "roles", "country", "towerofquizzesapi.read", "towerofquizzesapi.write" }
                     }
                 };
             }

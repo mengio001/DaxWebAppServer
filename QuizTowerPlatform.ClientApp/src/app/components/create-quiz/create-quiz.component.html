@@ -1,0 +1,58 @@
+<div class="banner">
+    <h1>Create Quiz</h1>
+</div>
+
+<ng-container *ngIf="authenticated$ | async">
+    <div class="row">
+        <div class="col">
+            <form autocomplete="off" [formGroup]="quizForm" (ngSubmit)="addQuiz(quizForm.value)" class="form-inline">
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : quizForm.get('quizName')?.invalid && quizForm.get('quizName')?.dirty }">
+                    <label for="quizName">Quiz label:</label>
+                    <em *ngIf="quizForm.get('quizName')?.invalid && quizForm.get('quizName')?.dirty">Required</em>
+                    <input class="form-control" formControlName="Name" id="quizName" type="text" />
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : quizForm.get('quizCategory')?.invalid && quizForm.get('quizCategory')?.dirty }">
+                    <label for="quizCategory">Category:</label>
+                    <em
+                        *ngIf="quizForm.get('quizCategory')?.invalid && quizForm.get('quizCategory')?.dirty">Required</em>
+                    <select class="form-control" formControlName="Category" id="quizCategory">
+                        <option value="" disabled>Select a category</option>
+                        <option *ngFor="let genre of quizGenres" [value]="genre.value">{{ genre.name }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{ 'error' : quizForm.get('quizQuizLogoUrl')?.invalid && quizForm.get('quizQuizLogoUrl')?.dirty }">
+                    <label for="quizQuizLogoUrl">QuizLogoUrl: (https://picsum.photos/200/300)</label>
+                    <em
+                        *ngIf="quizForm.get('quizQuizLogoUrl')?.invalid && quizForm.get('quizQuizLogoUrl')?.dirty">Required</em>
+                    <input class="form-control" formControlName="QuizLogoUrl" id="quizQuizLogoUrl" type="text" value="" />
+                </div>
+
+                <br />
+
+                <div class="form-group d-flex ms-auto">
+                    <button class="Create" type="submit" *ngIf="!saving" [disabled]="quizForm.invalid"
+                        class="form-control btn btn-primary ms-0 me-1 my-1">Create</button>
+                    <button type="button" (click)="cancel()" *ngIf="!saving"
+                        class="form-control btn btn-outline-secondary ms-1 me-0 my-1">Cancel</button>
+                </div>
+                <tq-loading-spinner [loading]="saving"></tq-loading-spinner>
+            </form>
+        </div>
+    </div>
+</ng-container>
+
+
+<div *ngIf="error$ | async" class="row">
+    <div class="col">
+        <div class="alert alert-warning">
+            <strong>Error: </strong>
+            <span>{{error$ | async}}</span>
+        </div>
+    </div>
+</div>

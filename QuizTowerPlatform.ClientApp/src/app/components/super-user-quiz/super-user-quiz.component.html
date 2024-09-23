@@ -1,0 +1,28 @@
+<div class="row my-4">
+  <div class="col-12">
+    <ng-container *ngIf="(quizItem$ | async) as quiz">
+
+      <app-quiz [quiz]="quiz"></app-quiz>
+
+      <div class="quiz-questions">
+        <h3>Total Questions: {{ quiz.QuizQuestions.length }}</h3>
+        <ul class="list-group">
+          <li *ngFor="let question of quiz.QuizQuestions; let i = index" class="list-group-item">
+            <h5>Question {{ i + 1 }}: {{ question.QuestionName }}</h5>
+            <ul class="list-unstyled">
+              <li><strong>1. </strong> {{ question.FirstOption }}</li>
+              <li><strong>2. </strong> {{ question.SecondOption }}</li>
+              <li><strong>3. </strong> {{ question.ThirdOption }}</li>
+              <li><strong>4. </strong> {{ question.FourthOption }}</li>
+            </ul>
+            <p>
+              <strong>Correct Answer: </strong>{{ question.CorrectAnswer }} <br />
+              <strong>Points: </strong>{{ question.CorrectAnswerPoints }}
+            </p>
+          </li>
+        </ul>
+      </div>
+
+    </ng-container>
+  </div>
+</div>
