@@ -59,7 +59,7 @@ jobs:
     displayName: "Test"
     inputs:
       command: test
-      projects: '$(solution)'
+      projects: 'QuizTowerPlatform.Api.Test/**/*.csproj'
       arguments: '--configuration $(buildConfiguration)'
 
   - task: FileTransform@1
