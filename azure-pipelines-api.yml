@@ -75,7 +75,7 @@ jobs:
   - task: CmdLine@2
     displayName: "Overwrite appsettings BackendApi"
     inputs:
-      workingDirectory: $(Build.SourcesDirectory)/UserManagement.Api
+      workingDirectory: $(Build.SourcesDirectory)/QuizTowerPlatform.Api
       script: "move appsettings.Release.json appsettings.json"
 
   - task: DeleteFiles@1
