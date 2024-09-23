@@ -23,12 +23,6 @@ variables:
 
 jobs:
 - job: Build_Angular_App
-  steps:
-  - task: UseNode@2
-    displayName: 'Install Node.js'
-    inputs:
-      version: '18.x'
-
   - task: Npm@1
     displayName: 'Install npm packages'
     inputs:
