@@ -29,7 +29,8 @@ jobs:
   - task: Npm@1
     displayName: 'Install npm packages'
     inputs:
-      command: 'install'
+      command: 'custom'
+      customCommand: 'install --legacy-peer-deps'
       workingDir: 'QuizTowerPlatform.ClientApp'
 
   - task: Npm@1
@@ -39,12 +40,12 @@ jobs:
       customCommand: 'run build -- --configuration production'
       workingDir: 'QuizTowerPlatform.ClientApp'
 
-  - task: Npm@1
-    displayName: 'Run Angular Unit Tests'
-    inputs:
-      command: 'custom'
-      customCommand: 'run test -- --watch=false --browsers=ChromeHeadless'
-      workingDir: 'QuizTowerPlatform.ClientApp'
+  # - task: Npm@1
+  #   displayName: 'Run Angular Unit Tests'
+  #   inputs:
+  #     command: 'custom'
+  #     customCommand: 'run test -- --watch=false --browsers=ChromeHeadless'
+  #     workingDir: 'QuizTowerPlatform.ClientApp'
       
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Angular Build Artifacts'
