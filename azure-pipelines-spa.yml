@@ -29,7 +29,8 @@ jobs:
   - task: Npm@1
     displayName: 'Install npm packages'
     inputs:
-      command: 'install'
+      command: 'custom'
+      customCommand: 'install --legacy-peer-deps'
       workingDir: 'QuizTowerPlatform.ClientApp'
 
   - task: Npm@1
