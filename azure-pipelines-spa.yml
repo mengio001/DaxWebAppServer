@@ -50,5 +50,5 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Angular Build Artifacts'
     inputs:
-      pathtoPublish: 'QuizTowerPlatform.ClientApp/dist/browser'
+      pathtoPublish: 'QuizTowerPlatform.ClientApp/dist'
       artifactName: '$(buildArtifactName)'
