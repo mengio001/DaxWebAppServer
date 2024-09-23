@@ -6,6 +6,8 @@ trigger:
     - 'release'
   paths:
     exclude:
+    - azure-pipelines-api.yml
+    - azure-pipelines-bff.yml
     - QuizTowerPlatform.Api/**
     - QuizTowerPlatform.Bff/**
     - README.md
@@ -23,6 +25,7 @@ variables:
 
 jobs:
 - job: Build_Angular_App
+  steps:
   - task: Npm@1
     displayName: 'Install npm packages'
     inputs:
