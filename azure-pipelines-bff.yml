@@ -5,17 +5,15 @@ trigger:
     - 'main'
     - 'release'
   paths:
+    include:
+    - QuizTowerPlatform.Bff/**
     exclude:
+    - QuizTowerPlatform.Api/**
+    - QuizTowerPlatform.ClientApp/**
     - README.md
     - docs/*
 
 pool: Default
-
-# resources:
-#   repositories:
-#   - repository: DevOps
-#     type: git
-#     name: DevOps
 
 variables:
   buildConfiguration: 'release'
@@ -24,7 +22,7 @@ variables:
   buildArtifactName: 'gitlab_drop$(Build.BuildId)_$(Build.SourceBranchName)'
   pipelineStartDate: $[format('{0:yyyy}.{0:M}.{0:d}', pipeline.startTime)]
   pipelineStartTime: $[format('{0:H}.{0:m}.{0:s}', pipeline.startTime)]
-  solution: '**/*.sln' # OR # '**/*.csproj'
+  solution: 'QuizTowerPlatform.Bff/**/*.csproj'
   MIGRATION: 'true'
 
 jobs:
@@ -39,30 +37,12 @@ jobs:
   - task: NuGetToolInstaller@1
     inputs:
       versionSpec: '6.11.x'
-
-  - task: PowerShell@2
-    displayName: 'Install dotnet-ef tool globally'
-    inputs:
-      targetType: 'inline'
-      script: |
-        dotnet tool install --global dotnet-ef
-        $env:Path += ";$env:USERPROFILE\.dotnet\tools"
-        dotnet ef --version
-
-  - task: PowerShell@2
-    displayName: 'Verify dotnet-ef installation'
-    inputs:
-      targetType: 'inline'
-      script: |
-        dotnet ef --version
-        
+      
   - task: DotNetCoreCLI@2
     displayName: "Restore"
     inputs:
       command: restore
       projects: '$(solution)'
-      # feedsToUse: 'config'
-      # nugetConfigPath: 'NuGet.config' # Use NuGet.config for custom or private libraries...
 
   - task: DotNetCoreCLI@2
     displayName: "Build"
@@ -81,37 +61,19 @@ jobs:
   - task: FileTransform@1
     displayName: "Transform web.Release.config"
     inputs:
-      folderPath: '$(System.DefaultWorkingDirectory)/UserManagement.Client'
+      folderPath: '$(System.DefaultWorkingDirectory)/QuizTowerPlatform.Bff'
       enableXmlTransform: true
 
   - task: DeleteFiles@1
     displayName: "Delete web.Release.config after transformation"
     inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/UserManagement.Client'
-      Contents: '**/web.Release.config'
-
-  - task: FileTransform@1
-    displayName: "Transform web.Release.config"
-    inputs:
-      folderPath: '$(System.DefaultWorkingDirectory)/UserManagement.Api'
-      enableXmlTransform: true
-
-  - task: DeleteFiles@1
-    displayName: "Delete web.Release.config after transformation"
-    inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/UserManagement.Api'
+      SourceFolder: '$(System.DefaultWorkingDirectory)/QuizTowerPlatform.Bff'
       Contents: '**/web.Release.config'
 
   - task: CmdLine@2
-    displayName: "Overwrite appsettings BackendApi"
+    displayName: "Overwrite appsettings Bff (Backend for Frontend)"
     inputs:
-      workingDirectory: $(Build.SourcesDirectory)/UserManagement.Api
-      script: "move appsettings.Release.json appsettings.json"
-
-  - task: CmdLine@2
-    displayName: "Overwrite appsettings ClientApp"
-    inputs:
-      workingDirectory: $(Build.SourcesDirectory)/UserManagement.Client
+      workingDirectory: $(Build.SourcesDirectory)/QuizTowerPlatform.Bff
       script: "move appsettings.Release.json appsettings.json"
 
   - task: DeleteFiles@1
@@ -120,43 +82,12 @@ jobs:
       SourceFolder:
       Contents: '**/appsettings.*.json'
 
-  - task: PowerShell@2
-    displayName: 'Set MIGRATION Variable'
-    inputs:
-      targetType: 'inline'
-      script: |
-        Write-Host "##vso[task.setvariable variable=MIGRATION]true"
-
   - task: DotNetCoreCLI@2
-    displayName: 'Run EF Migrations'
-    condition: eq(variables['MIGRATION'], 'true')
-    inputs:
-      command: 'custom'
-      custom: 'ef'
-      arguments: 'database update --project UserManagement.Api/UserManagement.Api.csproj --configuration $(BuildConfiguration)'
-
-  - task: PowerShell@2
-    displayName: 'Reset MIGRATION variable to false'
-    inputs:
-      targetType: 'inline'
-      script: |
-        Write-Host "##vso[task.setvariable variable=MIGRATION]false"
-
-  - task: DotNetCoreCLI@2
-    displayName: "Publish API"
+    displayName: "Publish BFF"
     inputs:
       command: 'publish'
       publishWebProjects: false
-      projects: 'UserManagement.Api/UserManagement.API.csproj'
-      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-      zipAfterPublish: true
-
-  - task: DotNetCoreCLI@2
-    displayName: "Publish Webassembly"
-    inputs:
-      command: 'publish'
-      publishWebProjects: false
-      projects: 'UserManagement.Client/UserManagement.Client.csproj'
+      projects: 'QuizTowerPlatform.Bff/QuizTowerPlatform.Bff.csproj'
       arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
       zipAfterPublish: true
 
@@ -168,7 +99,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     displayName: "Upload Artifacts"
-    condition: succeeded() # succeededOrFailed()
+    condition: succeeded()
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: '$(buildArtifactName)'
