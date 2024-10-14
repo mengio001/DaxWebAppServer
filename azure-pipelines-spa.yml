@@ -34,7 +34,7 @@ jobs:
       workingDir: 'QuizTowerPlatform.ClientApp'
 
   - task: Npm@1
-    displayName: 'Build Angular App'
+    displayName: 'Build Angular ClientApp'
     inputs:
       command: 'custom'
       customCommand: 'run build -- --configuration production'
