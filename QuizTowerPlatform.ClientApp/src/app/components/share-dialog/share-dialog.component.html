@@ -1,0 +1,22 @@
+
+<ng-container *ngIf="message.length > 0">
+  <h2 mat-dialog-title>{{ platformName }}</h2>
+  <mat-dialog-content class="mat-typography">
+    <p>{{ data.message }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="message.length <= 0">
+  <h2 mat-dialog-title>Sharing your achievement on <strong>{{ platformName }}</strong></h2>
+  <mat-dialog-content class="mat-typography">
+    <p>Your achievement is climbing the Tower of Quizzes! 🚀<br />
+      If the sharing page didn’t open, hit "Retry" to give it another shot and let the world know!</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" (click)="openSharePage()" cdkFocusInitial>Retry</button>
+  </mat-dialog-actions>
+</ng-container>

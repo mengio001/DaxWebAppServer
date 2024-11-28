@@ -1,0 +1,14 @@
+# Ignore node_modules across all directories
+**/node_modules/**
+
+# Ignore bin and obj directories across all projects
+**/bin/**
+**/obj/**
+
+# Ignore specific client app and provisioning folder
+QuizTowerPlatform.ClientApp/**
+provisioning/**
+
+# Ignore specific configuration files
+docker-compose.yml
+sonar-project.properties

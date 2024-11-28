@@ -1,4 +1,4 @@
-## Version: 1.1.0
+## Version: 1.1.1
 
 
 # Duende.IdentityServer
@@ -41,6 +41,18 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+# SonarQube ignore files
+*docker-compose.yml
+*sonar-project.properties
+*.sonarqube
+.sonarqube/
+*.scannerwork
+.scannerwork/
+
+# Cypress files
+cypress.env.json
+.env
 
 
 .DS_STORE

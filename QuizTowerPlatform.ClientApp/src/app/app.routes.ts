@@ -9,6 +9,7 @@ import { CreateQuizComponent } from './components/create-quiz/create-quiz.compon
 import { AddQuestionsComponent } from './components/add-questions/add-questions.component';
 import { StartQuizComponent } from './components/start-quiz/start-quiz.component';
 import { SuperUserQuizComponent } from './components/super-user-quiz/super-user-quiz.component';
+import { MyResultsComponent } from './components/my-results/my-results.component';
 
 export const routes: Routes = [
   { 
@@ -23,6 +24,14 @@ export const routes: Routes = [
   {
     path: 'user-session', 
     component: UserSessionComponent 
+  },
+  {
+    path: 'my-results', 
+    component: MyResultsComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) =>
+        inject(AuthorizationService).canReadQuizDetails(),
+    ],    
   },
   {
     path: 'create-quiz',

@@ -1,0 +1,47 @@
+<h1 data-test="title-achievements">Achievements</h1>
+
+<p *ngIf="isAnonymous$ | async"><em>Loading...</em></p>
+
+<table class="table table-striped table-sm" *ngIf="(isAuthenticated$ | async) && ((quizzes$ | async)?.length || true)">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Results</th>
+            <th>Score</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let quiz of quizzes$ | async" data-test="achievement-results">
+            <td>{{ quiz.Quiz.Name }}</td>
+            <td>{{ +quiz.Quiz.Category | categoryDisplayName }}</td>
+            <td>{{quiz.UsersCorrectAnswers}} of {{ quiz.UsersCorrectAnswers + quiz.UsersWrongAnswers }} correct answered
+            </td>
+            <td>Your score: {{ getPercentage(quiz)+"%" }} | {{quiz.PointsEarned}} points earned</td>
+            <td *ngIf="getPercentage(quiz) > 55 || true">
+                <div class="custom-share-button">
+                    <button data-test="sharethis-inline-button" class="share-button" [matMenuTriggerFor]="shareMenu">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000"><path d="M680-80q-50 0-85-35t-35-85q0-6 3-28L282-392q-16 15-37 23.5t-45 8.5q-50 0-85-35t-35-85q0-50 35-85t85-35q24 0 45 8.5t37 23.5l281-164q-2-7-2.5-13.5T560-760q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-24 0-45-8.5T598-672L317-508q2 7 2.5 13.5t.5 14.5q0 8-.5 14.5T317-452l281 164q16-15 37-23.5t45-8.5q50 0 85 35t35 85q0 50-35 85t-85 35Zm0-80q17 0 28.5-11.5T720-200q0-17-11.5-28.5T680-240q-17 0-28.5 11.5T640-200q0 17 11.5 28.5T680-160ZM200-440q17 0 28.5-11.5T240-480q0-17-11.5-28.5T200-520q-17 0-28.5 11.5T160-480q0 17 11.5 28.5T200-440Zm480-280q17 0 28.5-11.5T720-760q0-17-11.5-28.5T680-800q-17 0-28.5 11.5T640-760q0 17 11.5 28.5T680-720Zm0 520ZM200-480Zm480-280Z"/></svg>
+                        Share
+                    </button>
+                    <mat-menu #shareMenu="matMenu">
+                        <button data-test="st-network-copy" mat-menu-item (click)="openShareDialog('Copy', scoreLink)">Copy Link</button>
+                        <button data-test="st-network-facebook" mat-menu-item (click)="openShareDialog('Facebook', scoreLink)">Facebook</button>
+                        <button data-test="st-network-twitter" mat-menu-item (click)="openShareDialog('Twitter', scoreLink)">Twitter</button>
+                        <button data-test="st-network-linkedin" mat-menu-item (click)="openShareDialog('LinkedIn', scoreLink)">LinkedIn</button>
+                    </mat-menu>
+                  </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div *ngIf="error$ | async" class="row">
+    <div class="col">
+        <div class="alert alert-warning">
+            <strong>Error: </strong>
+            <span>{{error$ | async}}</span>
+        </div>
+    </div>
+</div>

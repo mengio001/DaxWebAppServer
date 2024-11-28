@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <SonarQubeExclude>True</SonarQubeExclude>
+    <SonarQubeExclusions>**/node_modules/**</SonarQubeExclusions>
+  </PropertyGroup>
+</Project>

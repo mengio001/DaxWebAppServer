@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, EMPTY, throwError, timer, catchError, BehaviorSubject, filter, of, Subject, switchMap, tap } from 'rxjs';
 import { IQuizModel, IAnswerModel } from '../types/quiz.classes.models';
+import { IMyResultsModel } from '../types/achievement.classes.models';
 
 @Injectable({
     providedIn: 'root',
@@ -42,6 +43,12 @@ export class QuizRepositoryService {
                 QuizId: quizId,
                 Answers: answers
             })
+            .pipe(catchError(this.showError));
+    }
+
+    public getMyResults(username: string): Observable<IMyResultsModel[]> {
+        return this.http
+            .get<IMyResultsModel[]>(`/api/UserResult/MyResults/${username}`)
             .pipe(catchError(this.showError));
     }
 }

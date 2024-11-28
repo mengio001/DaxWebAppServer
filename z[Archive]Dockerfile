@@ -1,0 +1,44 @@
+# Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Install SonarScanner for .NET
+RUN dotnet tool install --global dotnet-sonarscanner
+
+# Add .NET tools to PATH
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files and restore dependencies
+COPY . .
+RUN dotnet restore
+
+# SonarQube Analysis Begin
+ARG SONAR_TOKEN
+ARG SONAR_HOST_URL
+RUN dotnet sonarscanner begin /k:"QuizTowerPlatform-API" /d:sonar.host.url="$SONAR_HOST_URL" /d:sonar.token="$SONAR_TOKEN" /d:sonar.exclusions="QuizTowerPlatform.ClientApp/**,provisioning/**,**/bin/**,**/obj/**,**/node_modules/**,**/dist/**,docker-compose.yml,**/docker-compose.yml,sonar-project.properties,**/sonar-project.properties"
+
+# Build the solution
+RUN dotnet build ./QuizTowerPlatform.sln -c Release
+
+#Run tests with coverage
+RUN dotnet test ./QuizTowerPlatform.Api.Test/QuizTowerPlatform.Api.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./QuizTowerPlatform.Api.Test/coverage.opencover.xml
+
+# End SonarScanner analysis
+RUN dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+
+## dotnet sonarscanner begin /k:"QuizTowerPlatform-API" /d:sonar.host.url="http://localhost:9000" /d:sonar.token="sqp_b275e1dde2f99fdf966a312a841269b3bab071cc" /d:sonar.cs.opencover.reportsPaths="./QuizTowerPlatform.Api.Test/coverage.opencover.xml" /d:sonar.verbose=true
+## dotnet build ./QuizTowerPlatform.sln -c Release
+## dotnet test ./QuizTowerPlatform.Api.Test/QuizTowerPlatform.Api.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml
+## dotnet sonarscanner end /d:sonar.token="sqp_b275e1dde2f99fdf966a312a841269b3bab071cc"
+
+
+
+## dotnet sonarscanner begin /k:"QuizTowerPlatform-API" /d:sonar.projectBaseDir="C:\WorkspaceQuizTower\QuizTowerPlatform" /d:sonar.host.url="http://localhost:9000" /d:sonar.token="sqp_b275e1dde2f99fdf966a312a841269b3bab071cc" /d:sonar.exclusions="QuizTowerPlatform.ClientApp/**,provisioning/**,**/bin/**,**/obj/**,**/node_modules/**,**/dist/**,docker-compose.yml,**/docker-compose.yml,sonar-project.properties,**/sonar-project.properties" /d:sonar.verbose=true
+#### Dynamic exclusion Directory.Build.props => /d:sonar.exclusions="$(SonarQubeExclusions)" https://stackoverflow.com/questions/47939122/how-to-make-sonarqube-exclude-a-net-c-project-from-coverage-measures/48687929#48687929
+## dotnet sonarscanner begin /k:"QuizTowerPlatform-API" /d:sonar.projectBaseDir="C:\WorkspaceQuizTower\QuizTowerPlatform" /d:sonar.host.url="http://localhost:9000" /d:sonar.token="sqp_b275e1dde2f99fdf966a312a841269b3bab071cc" /d:sonar.exclusions="$(SonarQubeExclusions)" /d:sonar.verbose=true
+
+## sonar.inclusions
+
+## set "SQExclusionFilter=.*(\\QuizTowerPlatform.ClientApp\\|\\node_modules\\|provisioning|docker-compose.yml|sonar-project.properties).*"

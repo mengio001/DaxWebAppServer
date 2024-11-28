@@ -15,10 +15,9 @@ namespace QuizTowerPlatform.Data.Context.ViewPartials
             const string createViewSql = $@"
                 CREATE VIEW {vwName} WITH SCHEMABINDING 
                 AS
-                SELECT 
-	                u.ID As Id,
+                SELECT acc.UserId As Id,
 	                999 AS TeamId,
-	                upd.UserName,
+	                acc.UserName,
 	                null AS Initials,
 	                upd.FirstName,
 	                upd.MiddleName,
@@ -26,10 +25,11 @@ namespace QuizTowerPlatform.Data.Context.ViewPartials
 	                upd.Email,
 	                upd.PhoneNumber,
 	                upd.DateOfBirth,
-	                tap.UserId
-                FROM [TOQ].[User] u
-                JOIN [TOQ].[UserPersonalDetails] upd ON u.ID = upd.ID
-                LEFT JOIN [QuizTowerPlatform].[TotalAchievementPoints] tap ON u.ID = tap.UserId
+	                acc.UserId As UserId
+                FROM [Identity].[AspNetUsers] asp
+                JOIN [TOQ].[AccountLinkPath] acc ON asp.Id = acc.AspNetUserId AND [asp].[Subject] = acc.SubjectId
+                LEFT JOIN [TOQ].[UserPersonalDetails] upd ON acc.UserId = upd.ID AND acc.UserName = upd.UserName
+                LEFT JOIN [QuizTowerPlatform].[TotalAchievementPoints] tap ON acc.UserId = tap.UserId
             ";
 
             const string dropViewSql = $"DROP VIEW IF EXISTS {vwName}";

@@ -1,5 +1,10 @@
 import { NgModule, APP_ID } from '@angular/core';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -18,9 +23,12 @@ import { CreateQuizComponent } from './components/create-quiz/create-quiz.compon
 import { AddQuestionsComponent } from './components/add-questions/add-questions.component';
 import { StartQuizComponent } from './components/start-quiz/start-quiz.component';
 import { SuperUserQuizComponent } from './components/super-user-quiz/super-user-quiz.component';
+import { MyResultsComponent } from './components/my-results/my-results.component';
+import { ShareDialogComponent } from './components/share-dialog/share-dialog.component';
 
 import { SharedModule } from './shared/shared.module';
-import { CategoryDisplayNamePipe } from './pipes/category-display-name-pipe';
+import { CategoryDisplayNamePipe } from './pipes/category-display-name.pipe';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
 
 @NgModule({
     declarations: [
@@ -33,17 +41,25 @@ import { CategoryDisplayNamePipe } from './pipes/category-display-name-pipe';
         CreateQuizComponent,
         AddQuestionsComponent,
         CategoryDisplayNamePipe,
+        SafeUrlPipe,
         StartQuizComponent,
-        SuperUserQuizComponent
+        SuperUserQuizComponent,
+        MyResultsComponent,
+        ShareDialogComponent
     ],
     imports: [
         BrowserModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        BrowserAnimationsModule,        
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,  
         RouterModule.forRoot(routes),
         CommonModule,
-        SharedModule
+        SharedModule,
+        MatDialogModule
     ],
     providers: [
         { 
@@ -57,7 +73,11 @@ import { CategoryDisplayNamePipe } from './pipes/category-display-name-pipe';
         provideHttpClient(withInterceptorsFromDi()),      
     ],
     exports: [
-        CategoryDisplayNamePipe
+        CategoryDisplayNamePipe,
+        SafeUrlPipe,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,         
     ],
     bootstrap: [
         AppComponent
