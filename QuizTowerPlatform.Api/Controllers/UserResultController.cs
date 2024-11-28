@@ -23,22 +23,24 @@ namespace QuizTowerPlatform.Api.Controllers
         {
             var getUserResult = await this.service.GetUserResultById(Db, id, this.User.Identity.Name);
 
-            var userResult = mapper.Map<UserResultModel>(getUserResult);
+            return Ok(getUserResult);
 
-            try
-            {
-                if (userResult?.User == null)
-                {
-                    return BadRequest();
-                }
-            }
-            catch (Exception)
-            {
+            //var userResult = mapper.Map<UserResultModel>(getUserResult);
 
-                return NotFound();
-            }
+            //try
+            //{
+            //    if (userResult?.User == null)
+            //    {
+            //        return BadRequest();
+            //    }
+            //}
+            //catch (Exception)
+            //{
 
-            return Ok(userResult);
+            //    return NotFound();
+            //}
+
+            //return Ok(userResult);
         }
 
         [HttpGet("{username}", Name = "GetAllUserResultsByUser")]
@@ -46,9 +48,7 @@ namespace QuizTowerPlatform.Api.Controllers
         {
             try
             {
-                var userResults = (await this.service.GetAllUserResultsByUser(Db, this.User.Identity.Name ?? username))
-                    .Select(mapper.Map<UserResultModel>);
-
+                var userResults = (await this.service.GetAllUserResultsByUser(Db, this.User.Identity.Name ?? username));
                 return Ok(userResults);
             }
             catch (Exception)

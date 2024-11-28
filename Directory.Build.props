@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <!-- Globally exclude the ClientApp folder and node_modules directory -->
+    <SonarQubeExclude>false</SonarQubeExclude>
+	<SonarQubeExclusions>**/node_modules/**</SonarQubeExclusions>
+  </PropertyGroup>
+
+  <Target Name="ExcludeFoldersAndFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <!-- Ensure the exclusion of ClientApp and node_modules -->
+      <SonarQubeSetting Include="sonar.exclusions">
+        <Value>QuizTowerPlatform.ClientApp/**, **/node_modules/**, provisioning/**, **/bin/**, **/obj/**, docker-compose.yml, sonar-project.properties</Value>
+      </SonarQubeSetting>
+    </ItemGroup>
+  </Target>
+</Project>

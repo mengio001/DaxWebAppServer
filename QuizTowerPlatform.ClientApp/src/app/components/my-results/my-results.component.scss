@@ -1,0 +1,48 @@
+/* Parent container for the button */
+.custom-share-button {
+    display: inline-block;
+  }
+  
+  /* Button styles */
+  .share-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px; /* Space between icon and text */
+    background-color: white; /* White background */
+    color: #000; /* Text and icon color */
+    border: 1px solid #cccccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 8px; /* Add some padding */
+    font-size: 14px; /* Font size for text */
+    font-family: Arial, sans-serif; /* Font family */
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    width: auto;
+  }
+  
+  /* Icon styles */
+  .share-icon {
+    width: 16px;
+    height: 16px;
+    fill: #000;
+  }
+  
+  /* Hover effect */
+  .share-button:hover {
+    background-color: #f9f9f9; /* Slightly darker background */
+    border-color: #aaaaaa; /* Darker border */
+  }
+  
+  /* Active/Pressed state */
+  .share-button:active {
+    background-color: #eeeeee; /* Even darker background */
+    transform: translateY(1px); /* Slight pressed effect */
+  }
+  
+  /* Focus state for accessibility */
+  .share-button:focus {
+    outline: 2px solid #cccccc; /* Focus outline */
+    outline-offset: 2px;
+  }
+  

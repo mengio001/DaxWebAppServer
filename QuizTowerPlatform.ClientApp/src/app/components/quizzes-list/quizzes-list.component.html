@@ -1,8 +1,8 @@
 <div class="banner">
-    <h1>Tower of Quizzes</h1>
+    <h1 data-test="welcome-title">Tower of Quizzes</h1>
 </div>
 
-<p *ngIf="anonymous$ | async">
+<p *ngIf="anonymous$ | async" data-test="welcome-description">
     Please log in to see your Quiz items.
 </p>
 
