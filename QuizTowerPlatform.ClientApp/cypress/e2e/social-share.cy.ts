@@ -9,11 +9,13 @@ describe("My achievements page", () => {
   };
 
   beforeEach(() => {
+    // Given: De gebruiker is ingelogd en bevindt zich op de resultatenpagina
     cy.loginWithPKCE().then(() => {
       cy.visit('https://localhost:44365/my-results');
     });
   });
 
+  // Clear Cookies and Local Storage in cause of login-session issues
   // afterEach(() => {
   //   cy.clearCookies().then(() => {
   //     cy.clearLocalStorage();
@@ -72,6 +74,7 @@ describe("My achievements page", () => {
   });
 
   context("Network Sharing Flows", () => {
+    // Given: De gebruiker opent share-menu om social-share-buttons te zien
     beforeEach(() => {
       cy.getBySel(selectors.shareButton).first().click();
       cy.getBySel(selectors.copyLink).contains("Copy Link").should("exist").should("be.visible");
@@ -94,35 +97,45 @@ describe("My achievements page", () => {
     });
 
     it("should open the Facebook sharing popup when the 'Facebook' button is clicked", () => {
+      // Given: Een spy wordt gezet op 'window.open' om te controleren of de Facebook-popup correct wordt aangeroepen
+      cy.window().then((win) => {
+        cy.stub(win, 'open').as('windowOpen');
+      });
+
+      // When: De gebruiker klikt op de "Delen"-knop en kiest "Facebook"
+      cy.getBySel(selectors.facebook).click();
+
+      // Then: De Facebook-popup wordt geopend met de juiste URL
+      cy.get('@windowOpen').should('be.calledWithMatch', /https:\/\/www.facebook.com\/sharer\/sharer.php\?u=/);
+
+      // Then: De Facebook-fallback-dialog wordt weergegeven
+      cy.get('mat-dialog-content')
+        .should('be.visible')
+        .and('contain.text', 'Your achievement is climbing the Tower of Quizzes');
+
+      // When: De gebruiker klikt op de "Sluiten"-knop in de Facebook-fallback-dialog
+      cy.get('button[mat-dialog-close]')
+        .should('be.visible')
+        .and('contain.text', 'Cancel')
+        .click();
+
+      // Then: De Facebook-fallback-dialog wordt verwijderd uit de DOM
+      cy.get('mat-dialog-content').should('not.exist');
+    });
+
+    it('should open the Twitter sharing popup when the "Twitter" button is clicked', () => {
       // Spy on window.open
       cy.window().then((win) => {
         cy.stub(win, 'open').as('windowOpen');
       });
 
       // Simulate clicking the Twitter share button
-      cy.getBySel(selectors.facebook).click();
-
-      // Assert that window.open was called with the correct URL
-      cy.get('@windowOpen').should('be.calledWithMatch', /https:\/\/www.facebook.com\/sharer\/sharer.php\?u=/);
-
-      // Assert that the fallback dialog is visible
-      cy.get('mat-dialog-content')
-        .should('be.visible')
-        .and('contain.text', 'Your achievement is climbing the Tower of Quizzes');
-
-      cy.get('button[mat-dialog-close]').should("be.visible").and('contain.text', 'Cancel').click();
-      cy.get('mat-dialog-content').should("not.exist");
-    });
-
-    it('should open the Twitter sharing popup when the "Twitter" button is clicked', () => {
-      cy.window().then((win) => {
-        cy.stub(win, 'open').as('windowOpen');
-      });
-
       cy.getBySel(selectors.twitter).click();
 
+      // Assert that window.open was called with the correct URL
       cy.get('@windowOpen').should('be.calledWithMatch', /https:\/\/x.com\/intent\/post\?url=/);
 
+      // Assert that the fallback dialog is visible
       cy.get('mat-dialog-content')
         .should('be.visible')
         .and('contain.text', 'Your achievement is climbing the Tower of Quizzes');
@@ -139,7 +152,7 @@ describe("My achievements page", () => {
       cy.getBySel(selectors.linkedin).click();
 
       cy.get('@windowOpen').should('be.calledWithMatch', /https:\/\/www.linkedin.com\/sharing\/share\-offsite\/\?url=/);
- 
+
       cy.get('mat-dialog-content')
         .should('be.visible')
         .and('contain.text', 'Your achievement is climbing the Tower of Quizzes');
