@@ -1,14 +1,14 @@
-# 🌐 DAX WebAppClient (Angular SPA)
+# DAX WebAppClient (Angular SPA)
 
 This project is the **frontend** of the DAX WebAppServer — part of the **DAX (Distributed Architecture eXamples)** ecosystem. It is a modular single-page application built with Angular and served via the YARP-powered BFF layer.
 
 The app communicates securely with:
-- 🔐 **DAX IdentityServer** for authentication
-- 🌍 **DAX Backend API** for protected resources
+- **DAX IdentityServer** for authentication
+- **DAX Backend API** for protected resources
 
 ---
 
-## ⚙️ Development Server
+## Development Server
 
 Start the development server with:
 
@@ -21,7 +21,7 @@ The app will automatically reload when you edit source files.
 
 ---
 
-## 🧱 Code Scaffolding
+## Code Scaffolding
 
 Generate new components, modules, or services using Angular CLI:
 
@@ -36,7 +36,7 @@ ng generate directive|pipe|service|class|guard|interface|enum|module
 
 ---
 
-## 🏗️ Build
+## Build
 
 ```bash
 ng build
@@ -46,7 +46,7 @@ Compiled output is stored in the `dist/` directory.
 
 ---
 
-## ✅ Running Unit Tests
+## Running Unit Tests
 
 Run unit tests with:
 
@@ -58,7 +58,7 @@ Executed via [Karma](https://karma-runner.github.io).
 
 ---
 
-## 🌐 E2E Testing
+## E2E Testing
 
 Add a testing platform (e.g., Cypress or Playwright), then run:
 
@@ -68,13 +68,13 @@ ng e2e
 
 ---
 
-## 📚 Further Help
+## Further Help
 
 Use `ng help` or visit the [Angular CLI docs](https://angular.dev/tools/cli) for full command reference.
 
 ---
 
-## 📦 Project Context
+## Project Context
 
 This app is part of the full-stack DAX WebAppServer, which also includes:
 - A reverse proxy (BFF)

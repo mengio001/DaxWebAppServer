@@ -28,7 +28,6 @@ import { ShareDialogComponent } from './components/share-dialog/share-dialog.com
 
 import { SharedModule } from './shared/shared.module';
 import { CategoryDisplayNamePipe } from './pipes/category-display-name.pipe';
-import { SafeUrlPipe } from './pipes/safe-url.pipe';
 
 @NgModule({
     declarations: [
@@ -41,7 +40,6 @@ import { SafeUrlPipe } from './pipes/safe-url.pipe';
         CreateQuizComponent,
         AddQuestionsComponent,
         CategoryDisplayNamePipe,
-        SafeUrlPipe,
         StartQuizComponent,
         SuperUserQuizComponent,
         MyResultsComponent,
@@ -52,32 +50,31 @@ import { SafeUrlPipe } from './pipes/safe-url.pipe';
         MatMenuModule,
         MatIconModule,
         MatButtonModule,
-        BrowserAnimationsModule,        
+        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
-        ReactiveFormsModule,  
+        ReactiveFormsModule,
         RouterModule.forRoot(routes),
         CommonModule,
         SharedModule,
         MatDialogModule
     ],
     providers: [
-        { 
-            provide: APP_ID, useValue: 'ng-cli-universal' 
+        {
+            provide: APP_ID, useValue: 'ng-cli-universal'
         },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: CsrfHeaderInterceptor,
             multi: true
         },
-        provideHttpClient(withInterceptorsFromDi()),      
+        provideHttpClient(withInterceptorsFromDi()),
     ],
     exports: [
         CategoryDisplayNamePipe,
-        SafeUrlPipe,
         MatMenuModule,
         MatIconModule,
-        MatButtonModule,         
+        MatButtonModule,
     ],
     bootstrap: [
         AppComponent
