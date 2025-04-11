@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, filter, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
@@ -26,7 +26,7 @@ export class MyResultsComponent {
   public isAnonymous$: Observable<boolean>;
   public quizId: string = '';
 
-  public constructor(private http: HttpClient, private auth: AuthenticationService, private router: Router, private service: QuizRepositoryService, private dialog: MatDialog) { 
+  public constructor(readonly http: HttpClient, readonly auth: AuthenticationService, readonly router: Router, readonly service: QuizRepositoryService, readonly dialog: MatDialog) {
     this.session$ = auth.getSession();
     this.isAuthenticated$ = auth.getIsAuthenticated();
     this.isAnonymous$ = auth.getIsAnonymous();
@@ -69,7 +69,7 @@ export class MyResultsComponent {
       Twitter: `https://x.com/intent/post?url=${encodeURIComponent(contentLink)}&text=Check out my score!`,
       LinkedIn: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(contentLink)}`,
     };
-  
+
     if (platform === 'Copy') {
       navigator.clipboard.writeText(contentLink).then(() => {
         this.dialog.open(ShareDialogComponent, {

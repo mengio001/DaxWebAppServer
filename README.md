@@ -1,15 +1,15 @@
-# 🌐 DAX WebAppServer
+# DAX WebAppServer
 
 **DAX WebAppServer** is the main entry point of the **DAX (Distributed Architecture eXamples)** ecosystem — a full-stack web application server that integrates an Angular SPA, a .NET Backend API, and a BFF (Backend for Frontend) secured by YARP reverse proxy.
 
 This application interacts with other core services in the DAX architecture:
 
-- 🔐 **DAX IdentityServer** — Provides secure authentication and token-based authorization
-- 👥 **DAX User Management** — Manages registered users, roles, and access control (e.g. blocking users)
+- **DAX IdentityServer** — Provides secure authentication and token-based authorization
+- **DAX User Management** — Manages registered users, roles, and access control (e.g. blocking users)
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 | Component                  | Description                                |
 |---------------------------|--------------------------------------------|
@@ -19,7 +19,7 @@ This application interacts with other core services in the DAX architecture:
 
 ---
 
-## 🔗 External DAX Services Used
+## External DAX Services Used
 
 | Service               | Role in Platform                                      | URL                         |
 |-----------------------|--------------------------------------------------------|------------------------------|
@@ -28,7 +28,7 @@ This application interacts with other core services in the DAX architecture:
 
 ---
 
-## 🌍 Local Development URLs
+## Local Development URLs
 
 | Component       | Port/Cluster         | URL                          |
 |------------------|----------------------|-------------------------------|
@@ -41,7 +41,7 @@ This application interacts with other core services in the DAX architecture:
 
 ---
 
-## 🔒 Security & Proxying with YARP
+## Security & Proxying with YARP
 
 DAX WebAppServer uses YARP (Yet Another Reverse Proxy) to:
 
@@ -51,7 +51,7 @@ DAX WebAppServer uses YARP (Yet Another Reverse Proxy) to:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
