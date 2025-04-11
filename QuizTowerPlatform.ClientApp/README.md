@@ -1,27 +1,83 @@
-# QuizTowerPlatformClientApp
+# 🌐 DAX WebAppClient (Angular SPA)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.4.
+This project is the **frontend** of the DAX WebAppServer — part of the **DAX (Distributed Architecture eXamples)** ecosystem. It is a modular single-page application built with Angular and served via the YARP-powered BFF layer.
 
-## Development server
+The app communicates securely with:
+- 🔐 **DAX IdentityServer** for authentication
+- 🌍 **DAX Backend API** for protected resources
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
 
-## Code scaffolding
+## ⚙️ Development Server
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Start the development server with:
 
-## Build
+```bash
+ng serve --port 44480
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Then open [`https://localhost:44480`](https://localhost:44480) in your browser.  
+The app will automatically reload when you edit source files.
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 🧱 Code Scaffolding
 
-## Running end-to-end tests
+Generate new components, modules, or services using Angular CLI:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+ng generate component my-component
+```
 
-## Further help
+You can also use:
+```bash
+ng generate directive|pipe|service|class|guard|interface|enum|module
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+## 🏗️ Build
+
+```bash
+ng build
+```
+
+Compiled output is stored in the `dist/` directory.
+
+---
+
+## ✅ Running Unit Tests
+
+Run unit tests with:
+
+```bash
+ng test
+```
+
+Executed via [Karma](https://karma-runner.github.io).
+
+---
+
+## 🌐 E2E Testing
+
+Add a testing platform (e.g., Cypress or Playwright), then run:
+
+```bash
+ng e2e
+```
+
+---
+
+## 📚 Further Help
+
+Use `ng help` or visit the [Angular CLI docs](https://angular.dev/tools/cli) for full command reference.
+
+---
+
+## 📦 Project Context
+
+This app is part of the full-stack DAX WebAppServer, which also includes:
+- A reverse proxy (BFF)
+- A backend API
+- Integration with DAX IdentityServer and DAX User Management
+
