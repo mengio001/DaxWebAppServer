@@ -96,13 +96,13 @@ dotnet run --urls=https://localhost:44300
 
 ---
 
-## 📫 Contact
+## Contact
 
 Ozkan Mengi – [LinkedIn](https://linkedin.com/in/mengio1990) – o.mengi@timelessmedia.nl – [timelessmedia.nl](https://timelessmedia.nl)
 
 ---
 
-## 📄 License
+## License
 
 This project is part of the DAX sandbox and intended for educational/demo use.
 
